@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 import companyLogoWhite from '../assets/images/logo-white.svg';
 import facebookLogo from '../assets/images/icon-facebook.svg';
@@ -19,29 +20,29 @@ const Footer = () => {
           </div>
           {/* Logo */}
           <div>
-            <img src={companyLogoWhite} className='h-8' alt='' />
+            <Image src={companyLogoWhite} className='h-8' alt='' />
           </div>
           {/* Social Links Container */}
           <div className='flex justify-center space-x-4'>
             {/* Link 1 */}
             <Link href='#'>
-              <img src={facebookLogo} className='h-8' alt='' />
+              <Image src={facebookLogo} className='h-8' alt='' />
             </Link>
             {/* Link 2 */}
             <Link href='#'>
-              <img src={youtubeLogo} className='h-8' alt='' />
+              <Image src={youtubeLogo} className='h-8' alt='' />
             </Link>
             {/* Link 3 */}
             <Link href='#'>
-              <img src={twitterLogo} className='h-8' alt='' />
+              <Image src={twitterLogo} className='h-8' alt='' />
             </Link>
             {/* Link 4 */}
             <Link href='#'>
-              <img src={pinterestLogo} className='h-8' alt='' />
+              <Image src={pinterestLogo} className='h-8' alt='' />
             </Link>
             {/* Link 5 */}
             <Link href='#'>
-              <img src={instagramLogo} className='h-8' alt='' />
+              <Image src={instagramLogo} className='h-8' alt='' />
             </Link>
           </div>
         </div>

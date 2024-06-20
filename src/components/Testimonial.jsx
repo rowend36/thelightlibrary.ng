@@ -17,7 +17,7 @@ const Testimonial = () => {
         <div className='flex flex-col mt-24 md:flex-row md:space-x-6'>
           {/* Testimonial 1 */}
           <div className='flex flex-col items-center p-6 space-y-6 rounded-lg bg-veryLightGray md:w-1/3'>
-            <img src={avatarAnisha} className='w-16 -mt-14' alt='' />
+            {/* <Image src={avatarAnisha} className='w-16 -mt-14' alt='' /> */}
             <h5 className='text-lg font-bold'>Anisha Li</h5>
             <p className='text-sm text-darkGrayishBlue'>
               “Manage has supercharged our team's workflow. The ability to
@@ -28,7 +28,7 @@ const Testimonial = () => {
 
           {/* Testimonial 2 */}
           <div className='hidden flex-col items-center p-6 space-y-6 rounded-lg bg-veryLightGray md:flex md:w-1/3'>
-            <img src={avatarAli} className='w-16 -mt-14' alt='' />
+            {/* <Image src={avatarAli} className='w-16 -mt-14' alt='' /> */}
             <h5 className='text-lg font-bold'>Ali Bravo</h5>
             <p className='text-sm text-darkGrayishBlue'>
               “We have been able to cancel so many other subscriptions since
@@ -39,7 +39,7 @@ const Testimonial = () => {
 
           {/* Testimonial 3 */}
           <div className='hidden flex-col items-center p-6 space-y-6 rounded-lg bg-veryLightGray md:flex md:w-1/3'>
-            <img src={avatarRichard} className='w-16 -mt-14' alt='' />
+            {/* <Image src={avatarRichard} className='w-16 -mt-14' alt='' /> */}
             <h5 className='text-lg font-bold'>Richard Watts</h5>
             <p className='text-sm text-darkGrayishBlue'>
               “Manage has supercharged our team's workflow. The ability to

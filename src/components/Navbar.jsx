@@ -3,8 +3,10 @@ import { useState } from 'react';
 import  Link  from 'next/link';
 
 import companyLogo from '../assets/images/logo.svg';
+import Image from 'next/image';
 
 const Navbar = () => {
+  console.log(companyLogo)
   const [toggleMenu, setToggleMenu] = useState(false);
 
   return (
@@ -13,7 +15,7 @@ const Navbar = () => {
       <div className='flex items-center justify-between'>
         {/* Logo */}
         <div className='pt-2'>
-          <img src={companyLogo} alt='' />
+        <Image src={companyLogo} alt='' />
         </div>
         {/* Menu Items */}
         <div className='hidden space-x-6 md:flex'>

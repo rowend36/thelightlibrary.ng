@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 import illustrationIntro from '../assets/images/illustration-intro.svg';
 
@@ -10,11 +11,10 @@ const Hero = () => {
         {/* Left Item */}
         <div className='flex flex-col mb-32 space-y-12 md:w-1/2'>
           <h1 className='max-w-md text-4xl font-bold text-center md:text-5xl md:text-left'>
-            Bring everyone together to build better products
+          Welcome to NYSC Library
           </h1>
           <p className='max-w-sm text-center text-darkGrayishBlue md:text-left'>
-            Manage makes it simple for software teams to plan day-to-day tasks
-            while keeping the larger team goals in view.
+          NYSC Library is a modern e-library platform that offers a vast collection of books, articles, and resources for all your reading needs. Whether you're a student, professional, or avid reader, NYSC Library has something for everyone.
           </p>
           <div className='flex justify-center md:justify-start'>
             <Link
@@ -27,7 +27,7 @@ const Hero = () => {
         </div>
         {/* Image */}
         <div className='md:w-1/2'>
-          <img src={illustrationIntro} alt='' />
+          <Image src={illustrationIntro} alt='' />
         </div>
       </div>
     </section>

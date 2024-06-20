@@ -13,18 +13,20 @@ export default async function Home() {
   const supabase = createClient(cookieStore);
   const { data: todos } = await supabase.from("todos").select();
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <>
       <Navbar />
-      <ul>
-        {todos?.map((todo: any) => (
-          <li key={undefined}>{todo}</li>
-        ))}
-      </ul>
       <Hero />
       <Features />
+      {/* <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <ul>
+          {todos?.map((todo: any) => (
+            <li key={undefined}>{todo}</li>
+          ))}
+        </ul>
+      </main> */}
       <Testimonial />
       <CallToAction />
       <Footer />
-    </main>
+    </>
   );
 }
