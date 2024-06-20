@@ -15,7 +15,7 @@ const Navbar = () => {
       <div className='flex items-center justify-between'>
         {/* Logo */}
         <div className='pt-2'>
-        <Image src={companyLogo} alt='' />
+        <Image src={companyLogo} className='object-contain' alt='' />
         </div>
         {/* Menu Items */}
         <div className='hidden space-x-6 md:flex'>

@@ -11,7 +11,7 @@ const Features = () => {
             What's different about NYSC Library?
           </h2>
           <p className='max-w-sm text-center text-darkGrayishBlue md:text-left'>
-            Manage provides all the functionality your team needs, without the
+            NYSC Library provides all the functionality your team needs, without the
             complexity. Our software is tailor-made for modern digital product
             teams.
           </p>
@@ -90,7 +90,7 @@ const Features = () => {
               </h3>
               <p className='text-darkGrayishBlue'>
                 Stop jumping from one service to another to communicate, store
-                files, track tasks and share documents. Manage offers an
+                files, track tasks and share documents. NYSC Library offers an
                 all-in-one team productivity solution.
               </p>
             </div>

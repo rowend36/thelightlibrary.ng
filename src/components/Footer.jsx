@@ -20,29 +20,29 @@ const Footer = () => {
           </div>
           {/* Logo */}
           <div>
-            <Image src={companyLogoWhite} className='h-8' alt='' />
+            <Image src={companyLogoWhite} className='object-contain h-8' alt='' />
           </div>
           {/* Social Links Container */}
           <div className='flex justify-center space-x-4'>
             {/* Link 1 */}
             <Link href='#'>
-              <Image src={facebookLogo} className='h-8' alt='' />
+              <Image src={facebookLogo} className='object-contain h-8' alt='' />
             </Link>
             {/* Link 2 */}
             <Link href='#'>
-              <Image src={youtubeLogo} className='h-8' alt='' />
+              <Image src={youtubeLogo} className='object-contain h-8' alt='' />
             </Link>
             {/* Link 3 */}
             <Link href='#'>
-              <Image src={twitterLogo} className='h-8' alt='' />
+              <Image src={twitterLogo} className='object-contain h-8' alt='' />
             </Link>
             {/* Link 4 */}
             <Link href='#'>
-              <Image src={pinterestLogo} className='h-8' alt='' />
+              <Image src={pinterestLogo} className='object-contain h-8' alt='' />
             </Link>
             {/* Link 5 */}
             <Link href='#'>
-              <Image src={instagramLogo} className='h-8' alt='' />
+              <Image src={instagramLogo} className='object-contain h-8' alt='' />
             </Link>
           </div>
         </div>
