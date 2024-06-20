@@ -49,27 +49,27 @@ const Footer = () => {
         {/* List Container */}
         <div className='flex justify-around space-x-32'>
           <div className='flex flex-col space-y-3 text-white'>
-            <Link href='#' className='hover:text-brightRed'>
+            <Link href='#' className='hover:text-primary'>
               Home
             </Link>
-            <Link href='#' className='hover:text-brightRed'>
+            <Link href='#' className='hover:text-primary'>
               Pricing
             </Link>
-            <Link href='#' className='hover:text-brightRed'>
+            <Link href='#' className='hover:text-primary'>
               Products
             </Link>
-            <Link href='#' className='hover:text-brightRed'>
+            <Link href='#' className='hover:text-primary'>
               About
             </Link>
           </div>
           <div className='flex flex-col space-y-3 text-white'>
-            <Link href='#' className='hover:text-brightRed'>
+            <Link href='#' className='hover:text-primary'>
               Careers
             </Link>
-            <Link href='#' className='hover:text-brightRed'>
+            <Link href='#' className='hover:text-primary'>
               Community
             </Link>
-            <Link href='#' className='hover:text-brightRed'>
+            <Link href='#' className='hover:text-primary'>
               Privacy Policy
             </Link>
           </div>
@@ -84,7 +84,7 @@ const Footer = () => {
                 className='flex-1 px-4 rounded-full focus:outline-none'
                 placeholder='Updated in your inbox'
               />
-              <button className='px-6 py-2 text-white rounded-full bg-brightRed hover:bg-brightRedLight focus:outline-none'>
+              <button className='px-6 py-2 text-white rounded-full bg-primary hover:bg-primaryLight focus:outline-none'>
                 Go
               </button>
             </div>

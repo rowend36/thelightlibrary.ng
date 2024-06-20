@@ -20,9 +20,7 @@ const Testimonial = () => {
             {/* <Image src={avatarAnisha} className='object-contain w-16 -mt-14' alt='' /> */}
             <h5 className='text-lg font-bold'>Anisha Li</h5>
             <p className='text-sm text-darkGrayishBlue'>
-              NYSC Library has supercharged our team's workflow. The ability to
-              maintain visibility on larger milestones at all times keeps
-              everyone motivated.”
+              NYSC Library is a valauable tol that has improved my academic research. A big shout out to the team behind it.”
             </p>
           </div>
 
@@ -42,9 +40,7 @@ const Testimonial = () => {
             {/* <Image src={avatarRichard} className='object-contain w-16 -mt-14' alt='' /> */}
             <h5 className='text-lg font-bold'>Richard Watts</h5>
             <p className='text-sm text-darkGrayishBlue'>
-              NYSC Library has supercharged our team's workflow. The ability to
-              maintain visibility on larger milestones at all times keeps
-              everyone motivated.”
+              NYSC Library is a valauable tool that has improved my academic research. A big shout out to the team behind it.”
             </p>
           </div>
         </div>
@@ -52,7 +48,7 @@ const Testimonial = () => {
         <div className='my-16'>
           <Link
             href='#'
-            className='p-3 px-6 pt-2 text-white bg-brightRed rounded-full baseline hover:bg-brightRedLight'
+            className='p-3 px-6 pt-2 text-white bg-primary rounded-full baseline hover:bg-primaryLight'
           >
             Get Started
           </Link>

@@ -19,7 +19,7 @@ const Hero = () => {
           <div className='flex justify-center md:justify-start'>
             <Link
               href='#'
-              className='p-3 px-6 pt-2 text-white bg-brightRed rounded-full baseline hover:bg-brightRedLight'
+              className='p-3 px-6 pt-2 text-white bg-primary rounded-full baseline hover:bg-primaryLight'
             >
               Get Started
             </Link>
