@@ -2,28 +2,39 @@
   "name": "e-library",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "migrate:cloud": "cross-env NODE_ENV=production tsx ./scripts/migrate.ts",
+    "migrate": "cross-env NODE_ENV=development tsx ./scripts/migrate.ts",
+    "makemigration": "tsx ./scripts/create_migration.ts",
     "lint": "next lint"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.3.0",
-    "@supabase/storage-js": "^2.6.0",
-    "@supabase/supabase-js": "^2.43.5",
+    "@headlessui/react": "^2.1.1",
+    "commander": "^12.1.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "iconsax-react": "^0.0.8",
+    "index-to-position": "^1.0.0",
+    "knex": "^3.1.0",
     "next": "14.2.4",
+    "pg": "^8.12.0",
+    "pg-error-enum": "^0.7.1",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^16.11.10",
+    "@types/pg": "^8.11.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "tsx": "^4.16.0"
   }
 }
