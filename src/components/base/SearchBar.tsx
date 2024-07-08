@@ -8,8 +8,7 @@ export function SearchBar({
   ...props
 }: {
   className: string;
-  props?: InputBaseProps;
-}) {
+} & InputBaseProps) {
   return (
     <form className={className} action="/search">
       <InputBase

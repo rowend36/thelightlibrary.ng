@@ -15,7 +15,9 @@ export default function BookItem({ book }: { book: Book }) {
         <h3 className="font-bold text-darkBlue h-12 overflow-hidden overflow-clip line-clamp-2">
           {book.title}
         </h3>
-        <p className="text-sm text-center text-darkGray">{book.author?.name}</p>
+        <p className="text-sm text-center text-darkGray">
+          {book.authors?.map((e) => e.name).join(",")}
+        </p>
         <p className="text-sm text-center text-darkGray">
           {book.created_at.getFullYear()}
         </p>

@@ -1,4 +1,4 @@
-import { ReactNode } from "@types/react";
+import { ReactNode } from "react";
 import { default as NextLink, LinkProps } from "next/link";
 
 export default function Link(props: LinkProps & { children: ReactNode }) {
