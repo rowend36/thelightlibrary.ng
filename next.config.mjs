@@ -6,6 +6,21 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["knex"],
   },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
+
+    return config;
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "th.bing.com",
+        port: "",
+        pathname: "**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

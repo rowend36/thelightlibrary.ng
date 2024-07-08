@@ -4,30 +4,40 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 215;
-  --background-end-rgb: 255, 255, 255;
+  --background-rgb: 250, 255, 252;
+}
+html {
+  background: hsl(233, 12%, 13%);
 }
 /* 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
 } */
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-size: 14.75px;
+  background: rgb(var(--background-rgb));
+  animation: gradient 15s ease infinite;
+  font-family: "Lato", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+@layer components {
+  .container {
+    @apply px-4 sm:px-6 md:px-6 lg:px-12 xl:px-24 mx-auto;
+  }
+}
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .text-aligned {
+    @apply text-start sm:text-center md:text-start;
+  }
+  .items-aligned {
+    @apply items-start  sm:items-center md:items-start;
+  }
+  .justify-aligned {
+    @apply justify-start  sm:justify-center md:justify-start;
   }
 }

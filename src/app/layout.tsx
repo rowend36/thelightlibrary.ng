@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import "../config/database";
-
-const inter = Inter({ subsets: ["latin"] });
+import "@fontsource/lato";
+import "@fontsource/lato/latin-400-italic.css";
+import "@fontsource/lato/latin-700.css";
+import "@fontsource/varela-round/latin-400.css";
 
 export const metadata: Metadata = {
   title: "E-libary",
@@ -17,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -1,3 +1,5 @@
+import { Author } from "./author";
+
 export class Book {
   book_id!: number;
   title!: string;
@@ -7,4 +9,5 @@ export class Book {
   published_date!: Date;
   created_at!: Date;
   updated_at!: Date;
+  authors?: Author[];
 }

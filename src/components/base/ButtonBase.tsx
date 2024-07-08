@@ -1,9 +1,14 @@
 import { Button, ButtonProps } from "@headlessui/react";
-interface ButtonBaseProps extends ButtonProps {
+type ButtonBaseProps = ButtonProps<any> & {
+  [key: string]: any;
+} & {
+  as?: any;
   variant?: "contained" | "outlined" | "transparent";
-}
+  blank?: boolean;
+  children?: React.ReactNode;
+};
 
-export function ButtonBase(props: ButtonBaseProps) {
+export function ButtonBase({ blank, ...props }: ButtonBaseProps) {
   switch (props.variant) {
     case "transparent":
       return <Button {...props} />;
@@ -13,9 +18,9 @@ export function ButtonBase(props: ButtonBaseProps) {
       return (
         <Button
           {...props}
-          className={`py-3 px-6 text-white bg-primary rounded-full baseline hover:bg-primaryLight ${
-            props.className ?? ""
-          }`}
+          className={`py-3 px-6 font-bold ${
+            blank ? "" : "text-white bg-primary hover:bg-primaryHover "
+          }rounded-xl baseline  ${props.className ?? ""}`}
         />
       );
   }
