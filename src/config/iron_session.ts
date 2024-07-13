@@ -1,3 +1,4 @@
+import "server-only";
 import { type SessionOptions, getIronSession } from "iron-session";
 
 export const ironSessionOptions: SessionOptions = {

@@ -13,7 +13,9 @@ const Hero = () => {
         <div className="flex flex-col mt-16 mb-16 space-y-8 md:w-1/2 justify-center items-aligned max-md:bg-white max-md:bg-opacity-75 max-md:-mt-36 max-md:rounded-3xl max-md:py-8 max-md:shadow max-md:px-4">
           <h1 className="max-w-md text-4xl font-bold max-sm:text-left text-aligned md:text-5xl py-2 leading-tight md:leading-tight">
             Welcome To{" "}
-            <span className="text-nowrap text-primary">NYSC E-Library</span>
+            <span className="text-nowrap max-[300px]:text-wrap text-primary">
+              NYSC E&#8209;Library
+            </span>
           </h1>
           <p className="max-w-sm max-sm:text-left text-aligned text-text ">
             NYSC Library is a modern e-library platform that offers a vast

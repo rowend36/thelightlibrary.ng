@@ -4,5 +4,5 @@ export class Review {
   user_id!: number;
   rating!: number;
   comment!: string;
-  created_at!: Date;
+  created_at?: Date;
 }

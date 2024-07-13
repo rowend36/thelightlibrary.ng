@@ -9,14 +9,16 @@ import Footer from "@/components/home/Footer";
 import { getBooks } from "@/services/book_service";
 import { SearchBar } from "@/components/base/SearchBar";
 import { ButtonBase } from "@/components/base/ButtonBase";
+import { getUser } from "@/utils/get_user";
 
 export default async function Home() {
   const books = await getBooks();
+  const user = await getUser();
   return (
     <>
-      <Navbar />
+      <Navbar user={user ?? undefined} />
       <Hero />
-      <div className="text-white bg-slate-600 py-12 w-full">
+      <div className="text-white bg-darkBlue py-12 w-full">
         <h1 className="container text-2xl">Find any book</h1>
         <p className="container ">Search over 1 books....</p>
         <div className="container">

@@ -11,6 +11,7 @@ import { SearchNormal } from "iconsax-react";
 
 export default async function Books() {
   const res = await getBooks();
+  console.log({ res });
   return (
     <>
       <SearchSection />

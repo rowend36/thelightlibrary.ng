@@ -7,7 +7,7 @@ export class Book {
   content!: string;
   pdf_url!: string;
   published_date!: Date;
-  created_at!: Date;
-  updated_at!: Date;
+  created_at?: Date;
+  updated_at?: Date;
   authors?: Author[];
 }

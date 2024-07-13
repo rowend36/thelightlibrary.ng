@@ -1,13 +1,15 @@
 import React, { ReactNode } from "react";
+import Image from "next/image";
+import booksImage from "@/assets/images/books.jpg";
 
 const Features = () => {
   return (
     <section id="features">
       {/* Flex Container */}
-      <div className="container flex flex-col mt-10 space-y-12 md:space-y-0 md:flex-row">
+      <div className="container flex flex-col mt-10 space-y-12 md:space-y-0 md:flex-row md:space-x-8">
         {/* What's Different */}
         <div className="flex flex-col space-y-12 md:w-1/2 items-aligned">
-          <h2 className="max-w-md text-4xl font-bold text-aligned">
+          <h2 className="max-w-md text-4xl font-bold text-aligned items-start">
             What's different about NYSC Library?
           </h2>
           <p className="max-w-sm text-text text-aligned">
@@ -15,6 +17,13 @@ const Features = () => {
             without the complexity. Our software is tailor-made for every kind
             of user.
           </p>
+          <div className="w-full max-md:max-w-sm rounded-sm md:relative md:w-[calc(100%+2rem)] lg:w-[calc(100%+6rem)] md:self-end max-w-none flex-grow">
+            <Image
+              src={booksImage}
+              alt="Books"
+              className="object-cover max-w-2xl w-full"
+            />
+          </div>
         </div>
 
         {/* Numbered List */}

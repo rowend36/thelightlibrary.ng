@@ -9,6 +9,7 @@ export function SearchBar({
 }: {
   className: string;
 } & InputBaseProps) {
+  // TODO: Use Next.js Form Actions where possible
   return (
     <form className={className} action="/search">
       <InputBase

@@ -1,5 +1,3 @@
-import LoginPage from "../login/page";
+import Empty from "@/components/Empty";
 
-export default function SignUpPage() {
-  return <LoginPage isSignUp />;
-}
+export default Empty;

@@ -39,18 +39,21 @@ export function Type<T>(e: T) {
   return e;
 }
 export type Table = keyof metadata;
-export type Column = {
-  [key in Table]: Exclude<keyof metadata[key], symbol>;
-}[Table];
-export type JoinColumn =
-  | Column
+export type Column<T extends Table = Table> = {
+  [key in T]: Exclude<keyof metadata[key], symbol>;
+}[T];
+export type JoinColumn<T extends Table = Table> =
+  | Column<T>
   | {
-      [key in Table]: `${key}.${Exclude<keyof metadata[key], symbol>}`;
-    }[Table];
+      [key in T]: `${key}.${Exclude<keyof metadata[key], symbol>}`;
+    }[T];
 
 // Attempts to write a more complex version failed
-export type PropNotation<T> = `${keyof T & string}${any}`;
-export type Selection<T = any> =
-  | JoinColumn
+export type PropNotation<T> = `${keyof T & string}${"[]" | "."}${any}`;
+export type Values<T> = {
+  [key in Table]: metadata[key] extends T ? key : never;
+}[Table];
+export type Selection<T extends metadata[Table] = any> =
+  | JoinColumn<Values<T>>
   | `${JoinColumn} as ${PropNotation<T>}`;
 export type JoinPredicate = `${JoinColumn} = ${JoinColumn}`;

@@ -21,7 +21,9 @@ export default function reshape<T extends { [key: string]: any }, V = T>(
     for (let key in e) {
       if (!insert(key, e[key], newCtx))
         throw new Error(
-          "Duplicate key " + key + ". Are you missing an array syntax? "
+          "Duplicate key " +
+            key +
+            ". Are you missing an array syntax or failing to provide a unique key as the first selection? "
         );
     }
     if (newCtx !== last) {

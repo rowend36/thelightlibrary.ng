@@ -1,5 +1,5 @@
 "use client";
-import { withUser } from "@/utils/with_user";
+import { withUser } from "@/utils/get_user.jsx";
 import { Menu, User as UserIcon } from "iconsax-react";
 import { User } from "@/data/models/user";
 import NextLink from "next/link";
@@ -7,6 +7,7 @@ import { useState } from "react";
 import { AppLogo } from "../AppLogo";
 import { ButtonBase } from "../base/ButtonBase";
 import Link from "../base/Link";
+import AvatarImage from "../AvatarImage";
 
 const Navbar = ({ user }: { user?: User }) => {
   console.log({ user });
@@ -25,6 +26,17 @@ const Navbar = ({ user }: { user?: User }) => {
     <nav className="relative container  py-2 border-b ">
       {/* Flex Container */}
       <div className="flex items-center justify-between">
+        {/* Hamburger Icon */}
+        <button
+          className={
+            toggleMenu
+              ? "open block hamburger md:hidden focus:outline-none text-primary"
+              : "block hamburger md:hidden focus:outline-none text-text"
+          }
+          onClick={() => setToggleMenu(!toggleMenu)}
+        >
+          <Menu size={20} />
+        </button>
         <AppLogo />
         {/* Menu Items */}
         <div className="hidden xl:space-x-6 space-x-3 md:flex">{links}</div>
@@ -41,25 +53,15 @@ const Navbar = ({ user }: { user?: User }) => {
           <ButtonBase
             as={NextLink}
             blank
-            className="hidden md:inline-block align-middle ml-2 lg:ml-4 !rounded-full !p-3 hover:bg-primaryLight border"
-            href="/admin"
+            className={`inline-block align-middle ml-2 lg:ml-4 ${
+              user ? "!p-0" : ""
+            } hover:bg-primaryLight`}
+            href={user ? "/login" : "/admin"}
             variant="contained"
           >
-            <UserIcon size={20} />
+            {user ? <AvatarImage user={user} /> : <span>Login</span>}
           </ButtonBase>
         </div>
-
-        {/* Hamburger Icon */}
-        <button
-          className={
-            toggleMenu
-              ? "open block hamburger md:hidden focus:outline-none text-primary"
-              : "block hamburger md:hidden focus:outline-none text-text"
-          }
-          onClick={() => setToggleMenu(!toggleMenu)}
-        >
-          <Menu size={20} />
-        </button>
       </div>
 
       {/* Mobile Menu */}
@@ -83,5 +85,4 @@ const Navbar = ({ user }: { user?: User }) => {
   );
 };
 
-export const getServersideProps = withUser;
 export default Navbar;
