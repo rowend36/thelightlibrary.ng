@@ -57,8 +57,8 @@ Please reach me on Whataspp via +2347026207147
               >
                 <Image
                   src={member.image}
-                  width={480}
-                  height={480}
+                  width={960}
+                  height={960}
                   alt={"image for " + member.name}
                   className="max-w-full w-[480px] aspect-square object-cover object-top  rounded-full border border-darkBlue/25"
                 />
