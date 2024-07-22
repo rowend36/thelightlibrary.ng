@@ -1,7 +1,7 @@
 import Navbar from "@/components/about/Navbar";
 import Footer from "@/components/about/Footer";
 import Image from "next/image";
-import anisha from "../../assets/images/download.jpeg";
+import anisha from "../../assets/images/website-design.webp";
 import { Button } from "@headlessui/react";
 import { ButtonBase } from "@/components/base/ButtonBase";
 import Link from "@/components/base/Link";
