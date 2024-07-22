@@ -19,7 +19,7 @@ export function AppLogo(props: any) {
         className="font-[400] lowercase leading-tight text-primary pt-[0.5em]"
         style={{ letterSpacing: 0.5, fontFamily: "Varela Round" }}
       >
-        NYSC
+        NYSC ABIA
         <br />
         E-LIBRARY
       </span>

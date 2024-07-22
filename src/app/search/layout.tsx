@@ -1,5 +1,5 @@
-import Footer from "@/components/home/Footer";
-import Navbar from "@/components/home/Navbar";
-import BooksLayout from "../books/layout";
+import Footer from "@/components/about/Footer";
+import Navbar from "@/components/about/Navbar";
+import BooksLayout from "../about/layout";
 
 export default BooksLayout;

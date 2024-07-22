@@ -12,7 +12,7 @@ const CallToAction = () => {
         {/* Button */}
         <div>
           <ButtonBase
-            href="/books"
+            href="/"
             blank
             className={`text-primary bg-white hover:bg-primaryLight`}
           >

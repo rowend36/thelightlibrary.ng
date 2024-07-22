@@ -10,12 +10,12 @@ const Features = () => {
         {/* What's Different */}
         <div className="flex flex-col space-y-12 md:w-1/2 items-aligned">
           <h2 className="max-w-md text-4xl font-bold text-aligned items-start">
-            What's different about NYSC Library?
+            What's different about NYSC Abia Library?
           </h2>
           <p className="max-w-sm text-text text-aligned">
-            NYSC Library provides all the functionality you need for research,
-            without the complexity. Our software is tailor-made for every kind
-            of user.
+            NYSC Abia Library provides all the functionality you need for
+            research, without the complexity. Our software is tailor-made for
+            every kind of user.
           </p>
           <div className="w-full max-md:max-w-sm rounded-sm md:relative md:w-[calc(100%+2rem)] lg:w-[calc(100%+6rem)] md:self-end max-w-none flex-grow">
             <Image
@@ -42,7 +42,7 @@ const Features = () => {
           </ListItem>
           <ListItem index={3} title="Everything you need in one place">
             Stop jumping from one service to another to communicate, store
-            files, track tasks and share documents. NYSC Library offers an
+            files, track tasks and share documents. NYSC Abia Library offers an
             all-in-one research solution.
           </ListItem>
         </div>

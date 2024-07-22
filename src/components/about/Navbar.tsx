@@ -1,25 +1,30 @@
 "use client";
-import { withUser } from "@/utils/get_user.jsx";
-import { Menu, User as UserIcon } from "iconsax-react";
 import { User } from "@/data/models/user";
+import { Menu } from "iconsax-react";
 import NextLink from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { AppLogo } from "../AppLogo";
+import AvatarImage from "../AvatarImage";
 import { ButtonBase } from "../base/ButtonBase";
 import Link from "../base/Link";
-import AvatarImage from "../AvatarImage";
 
 const Navbar = ({ user }: { user?: User }) => {
   console.log({ user });
   const [toggleMenu, setToggleMenu] = useState(false);
-
+  const route = usePathname();
   const links = (
     <>
-      <Link href="/upload">Upload</Link>
-      <Link href="#">Product</Link>
-      <Link href="#">About Us</Link>
-      <Link href="#">Careers</Link>
-      <Link href="#">Community</Link>
+      {/* <Link href="/upload">Upload</Link>
+      <Link href="#">Product</Link> */}
+      <Link href="/about" disabled={route === "/about"}>
+        About Us
+      </Link>
+      <Link href="/team" disabled={route === "/team"}>
+        Meet the team
+      </Link>
+      {/* <Link href="#">Careers</Link>
+      <Link href="#">Community</Link> */}
     </>
   );
   return (
@@ -45,7 +50,7 @@ const Navbar = ({ user }: { user?: User }) => {
           <ButtonBase
             as={NextLink}
             className="hidden md:inline-block align-middle ml-2 lg:ml-4"
-            href="/books"
+            href="/"
             variant="contained"
           >
             Browse

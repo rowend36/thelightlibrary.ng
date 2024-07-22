@@ -61,27 +61,25 @@ const Footer = () => {
         <div className="flex flex-grow flex-wrap gap-x-32 gap-y-8">
           <div className="flex md:justify-around flex-wrap gap-x-32 gap-y-4">
             <div className="flex flex-col space-y-3 text-white">
-              <Link href="#" className="hover:text-primary">
+              <Link href="/" className="hover:text-primary">
                 Home
               </Link>
-              <Link href="#" className="hover:text-primary">
-                Pricing
+              <Link href="/search" className="hover:text-primary">
+                Search
               </Link>
-              <Link href="#" className="hover:text-primary">
-                Products
+              <Link href="/team" className="hover:text-primary">
+                Meet the team
               </Link>
-              <Link href="#" className="hover:text-primary">
-                About
+              <Link href="/about" className="hover:text-primary">
+                About Us
               </Link>
             </div>
             <div className="flex flex-col space-y-3 text-white">
-              <Link href="#" className="hover:text-primary">
-                Careers
+              <Link href="/tc" className="hover:text-primary">
+                Terms and Conditions
               </Link>
-              <Link href="#" className="hover:text-primary">
-                Community
-              </Link>
-              <Link href="#" className="hover:text-primary">
+
+              <Link href="/pc" className="hover:text-primary">
                 Privacy Policy
               </Link>
             </div>

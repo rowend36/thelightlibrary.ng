@@ -14,7 +14,7 @@ export default function BookList({
   return (
     <div className="container py-8">
       <h3 className="text-2xl font-bold text-darkBlue pb-4">{title}</h3>
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {!books ? (
           <div className="text-lg">Loading...</div>
         ) : books.length === 0 ? (

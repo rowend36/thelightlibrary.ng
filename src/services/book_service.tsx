@@ -3,6 +3,7 @@ import { db, JoinColumn, Selection, Table, Type } from "@/config/database";
 import reshape from "@/utils/reshape";
 import { Author } from "@/data/models/author";
 import { uploadAndGetUrl } from "@/config/storage";
+import { Knex } from "knex";
 
 export async function getBooks(limit: number = 100, offset: number = 0) {
   return reshape(
@@ -21,6 +22,7 @@ export async function getBooks(limit: number = 100, offset: number = 0) {
         Type<Selection[]>([
           "books.book_id",
           "title",
+          "pdf_url",
           "description",
           "books.created_at",
           "authors.name as authors[].name",
@@ -29,44 +31,13 @@ export async function getBooks(limit: number = 100, offset: number = 0) {
       )
       .limit(limit)
       .offset(offset)
-  );
+  ).map(prefixBucket);
 }
+
 async function search<T>(
   query: string,
-  limit: number,
-  laxLevel = 1,
-  cb: (query: string) => Promise<T[]>
-) {
-  const words = query
-    .replace(/[^-_'\w ]/g, "")
-    .split(" ")
-    .filter(Boolean);
-
-  while (laxLevel <= words.length) {
-    const opts = [];
-    for (let i = 0; i < laxLevel; i++) {
-      const split_words = [];
-      for (let j = 0; j < words.length - laxLevel + 1; j++) {
-        split_words.push(words[i + j] + ":*");
-      }
-      opts.push(split_words.join("<->"));
-    }
-
-    const result = await cb("(" + opts.join(")|(") + ")");
-
-    if (result.length >= limit) {
-      return result;
-    }
-    if (laxLevel === words.length) return result;
-    laxLevel = Math.min(words.length, Math.max(laxLevel * 2, words.length - 3));
-  }
-  return [];
-}
-
-async function search2<T>(
-  query: string,
   tsvector: string,
-  select: any,
+  select: ReturnType<Knex<T>["select"]>,
   offset: number,
   limit: number,
   searchSpace = 100
@@ -109,14 +80,18 @@ async function search2<T>(
       mainQuery = subquery.orderBy("rank", "desc").offset(offset).limit(limit);
     }
 
-    result = reshape<any, T>(await mainQuery);
+    result = await mainQuery;
     if (result.length >= limit) {
-      return result;
+      return reshape<any, T>(result);
     }
     searchSpace *= 2;
   }
 
   return result;
+}
+
+export async function deleteBook(book_id: number) {
+  return db<Book>(Type<Table>("books")).where("book_id", book_id).delete();
 }
 
 export async function searchBooks(
@@ -125,34 +100,43 @@ export async function searchBooks(
   offset: number = 0,
   laxLevel = 1
 ) {
-  return await search2(
-    query,
-    "books.tsv",
-    db<Book>(Type<Table>("books"))
-      .leftJoin(
-        Type<Table>("book_authors"),
-        Type<JoinColumn>("books.book_id"),
-        Type<JoinColumn>("book_authors.book_id")
-      )
-      .leftJoin(
-        Type<Table>("authors"),
-        Type<JoinColumn>("book_authors.author_id"),
-        Type<JoinColumn>("authors.author_id")
-      )
-      .select(
-        Type<Selection<Book>[]>([
-          "books.book_id",
-          "title",
-          "description",
-          "books.created_at",
-          "authors.name as authors[].name",
-          "authors.author_id as authors[].id",
-        ])
-      ),
-    offset,
-    limit
-  );
+  return (
+    await search<Book>(
+      query,
+      "books.tsv",
+      db<Book>(Type<Table>("books"))
+        .leftJoin(
+          Type<Table>("book_authors"),
+          Type<JoinColumn>("books.book_id"),
+          Type<JoinColumn>("book_authors.book_id")
+        )
+        .leftJoin(
+          Type<Table>("authors"),
+          Type<JoinColumn>("book_authors.author_id"),
+          Type<JoinColumn>("authors.author_id")
+        )
+        .select(
+          Type<Selection<Book>[]>([
+            "books.book_id",
+            "title",
+            "pdf_url",
+            "description",
+            "books.created_at",
+            "authors.name as authors[].name",
+            "authors.author_id as authors[].id",
+          ])
+        ),
+      offset,
+      limit
+    )
+  ).map(prefixBucket);
 }
+
+const prefixBucket = (e: Book) => {
+  if (e.pdf_url)
+    e.pdf_url = `${process.env.SUPABASE_URL}/storage/v1/object/public/${e.pdf_url}`;
+  return e;
+};
 
 export async function searchAuthors(
   query: string,
@@ -160,15 +144,14 @@ export async function searchAuthors(
   offset: number = 0,
   laxLevel = 1
 ) {
-  return await search(query, limit, laxLevel, async (query) =>
-    reshape<any, Author>(
-      await db<Author>(Type<Table>("authors"))
-        .whereRaw(`authors.tsv @@ to_tsquery(?)`, [query])
-        .limit(limit)
-        .select(Type<Selection<Author>[]>(["author_id", "name"]))
-        .offset(offset)
-        .limit(limit)
-    )
+  return await search(
+    query,
+    "authors.tsv",
+    db<Author>(Type<Table>("authors")).select(
+      Type<Selection<Author>[]>(["author_id", "name"])
+    ),
+    offset,
+    limit
   );
 }
 
@@ -178,7 +161,9 @@ export async function addBook({
   ...book
 }: Partial<Book> & { authors: Author[]; pdf: File }) {
   return db.transaction(async (trx) => {
+    console.log("Uploading pdf....");
     const pdf_url = await uploadAndGetUrl(pdf);
+    console.log("Uploading book....");
     const book_id = (
       await trx<Book>(Type<Table>("books"))
         .insert({ ...book, pdf_url })
@@ -187,8 +172,10 @@ export async function addBook({
     const new_authors = authors.filter(
       (author) => (author.author_id ?? 0) <= 0
     );
-    if (authors.length) {
-      const mapped_authors = await trx<Author>(Type<Table>("authors"))
+    let mapped_authors: Author[] = [];
+    if (new_authors.length) {
+      console.log("Uploading authors....");
+      mapped_authors = await trx<Author>(Type<Table>("authors"))
         .insert(
           new_authors.map((e) => {
             let { author_id, ...x } = e;
@@ -196,15 +183,22 @@ export async function addBook({
           })
         )
         .returning("author_id");
-      await trx("book_authors").insert(
-        (authors.filter((e) => e.author_id > 0) as typeof mapped_authors)
-          .concat(mapped_authors)
-          .map((author) => ({
-            book_id,
-            author_id: author.author_id,
-          }))
-      );
     }
+    console.log("Updating book authors....");
+    await trx("book_authors").insert(
+      authors
+        .filter((e) => e.author_id > 0)
+        .concat(mapped_authors)
+        .map((author) => ({
+          book_id,
+          author_id: author.author_id,
+        }))
+    );
+
     return book_id;
   });
+}
+
+export async function getBookCount() {
+  return (await db<Book>(Type<Table>("books")).count())[0].count as number;
 }

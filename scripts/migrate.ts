@@ -10,7 +10,9 @@ class Migration {
 }
 
 fs.readdir(migrationsDir, async (err, migrations) => {
-  migrations.sort();
+  migrations.sort(
+    (e, f) => parseInt(e.split("_")[0]) - parseInt(f.split("_")[0])
+  );
 
   let applied: string[] = [];
   try {
@@ -26,6 +28,7 @@ fs.readdir(migrationsDir, async (err, migrations) => {
   }
 
   const pending = migrations.filter((m) => !applied.includes(m));
+  console.log({ applied, pending });
   if (pending.length === 0) {
     console.log("No pending migrations");
     return;

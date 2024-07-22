@@ -22,7 +22,7 @@ export const submitBookSchema = z.object({
         biography: z.string().optional().default(""),
       })
     )
-    .optional()
-    .default([]),
+    .min(1),
+
   pdf: z.instanceof(File).refine((e) => e.size > 0, "File is required"),
 });

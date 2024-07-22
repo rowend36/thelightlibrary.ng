@@ -5,6 +5,9 @@ import "@fontsource/lato";
 import "@fontsource/lato/latin-400-italic.css";
 import "@fontsource/lato/latin-700.css";
 import "@fontsource/varela-round/latin-400.css";
+import Footer from "@/components/about/Footer";
+import Navbar from "@/components/about/Navbar";
+import { getUser } from "@/utils/get_user";
 
 export const metadata: Metadata = {
   title: "E-libary",

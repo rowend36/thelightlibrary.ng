@@ -10,21 +10,21 @@ const Hero = () => {
       {/* Flex Container */}
       <div className="container  flex flex-col-reverse md:justify-between items-stretch md:gap-8 space-y-0 md:space-y-0 md:flex-row">
         {/* Left Item */}
-        <div className="flex flex-col mt-16 mb-16 space-y-8 md:w-1/2 justify-center items-aligned max-md:bg-white max-md:bg-opacity-75 max-md:-mt-36 max-md:rounded-3xl max-md:py-8 max-md:shadow max-md:px-4">
+        <div className="flex flex-col mt-16 mb-16 space-y-8 md:w-1/2 justify-center items-aligned max-md:bg-white max-md:bg-opacity-75 max-md:-mt-44 max-md:rounded-3xl max-md:py-8 max-md:shadow max-md:px-4">
           <h1 className="max-w-md text-4xl font-bold max-sm:text-left text-aligned md:text-5xl py-2 leading-tight md:leading-tight">
             Welcome To{" "}
-            <span className="text-nowrap max-[300px]:text-wrap text-primary">
-              NYSC E&#8209;Library
+            <span className="max-[300px]:text-wrap text-primary">
+              NYSC&nbsp;Abia E&#8209;Library
             </span>
           </h1>
           <p className="max-w-sm max-sm:text-left text-aligned text-text ">
-            NYSC Library is a modern e-library platform that offers a vast
+            NYSC Abia Library is a modern e-library platform that offers a vast
             collection of books, articles, and resources for all your reading
             needs. Whether you're a student, professional, or avid reader, NYSC
-            Library has something for everyone.
+            Abia Library has something for everyone.
           </p>
           <div className="flex justify-center md:justify-start w-full py-2">
-            <ButtonBase as={Link} href="/books">
+            <ButtonBase as={Link} href="/">
               Get Started
             </ButtonBase>
           </div>

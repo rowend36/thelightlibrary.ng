@@ -19,8 +19,9 @@ program.argument("<name>", "migration name").action(async (name) => {
     path.join(migrationsDir, `${Date.now()}_${name}.sql`),
     "// Write your migration here"
   );
+  console.log("Migration created successfully");
 });
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file:///${process.argv[1]?.replace(/\\/g, "/")}`) {
   // Your code here, this block will only execute if this module is the entry point
   program.parse(process.argv);
 }

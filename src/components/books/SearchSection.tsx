@@ -17,6 +17,7 @@ export default function SearchSection({
         <SearchBar
           className="flex flex-grow flex-wrap justify-center items-end gap-4 text-white"
           label="Find books, research papers, ..."
+          defaultValue={searchParam}
         />
       </div>
     </section>

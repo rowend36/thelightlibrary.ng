@@ -1,8 +1,8 @@
 import Link from "@/components/base/Link";
 import { SearchBar } from "@/components/base/SearchBar";
-import CallToAction from "@/components/home/CallToAction";
-import Footer from "@/components/home/Footer";
-import Navbar from "@/components/home/Navbar";
+import CallToAction from "@/components/about/CallToAction";
+import Footer from "@/components/about/Footer";
+import Navbar from "@/components/about/Navbar";
 import { getBooks } from "@/services/book_service";
 import { getUser } from "@/utils/get_user";
 

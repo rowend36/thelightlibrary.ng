@@ -1,5 +1,5 @@
-import Footer from "@/components/home/Footer";
-import Navbar from "@/components/home/Navbar";
+import Footer from "@/components/about/Footer";
+import Navbar from "@/components/about/Navbar";
 import { getUser } from "@/utils/get_user";
 
 export default async function BooksLayout({

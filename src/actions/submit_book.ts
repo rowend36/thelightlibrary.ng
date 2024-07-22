@@ -13,10 +13,10 @@ export async function submitBookAction(
     console.log({ data });
     await addBook(data);
   } catch (error) {
+    console.log(error);
     if (error instanceof ZodError) {
       return { success: false, errors: error.errors };
     }
-    console.log(error);
     return { success: false, message: "Server Error" };
   }
   return { success: true };

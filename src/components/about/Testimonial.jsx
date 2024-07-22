@@ -12,7 +12,7 @@ const Testimonial = () => {
       <div className="container mt-32 text-aligned lg:text-center">
         {/* Heading */}
         <h2 className="text-4xl font-bold text-aligned lg:text-center">
-          What&apos;s Different About NYSC Library?
+          What&apos;s Different About NYSC Abia Library?
         </h2>
         {/* Testimonials Container */}
         <div className="flex flex-col mt-12 md:flex-row md:space-x-6">
@@ -21,7 +21,7 @@ const Testimonial = () => {
             {/* <Image src={avatarAnisha} className='object-contain w-16 -mt-14' alt='' /> */}
             <h5 className="text-lg font-bold">Anisha Li</h5>
             <p className="text-sm text-text">
-              NYSC Library is a valauable tol that has improved my academic
+              NYSC Abia Library is a valauable tol that has improved my academic
               research. A big shout out to the team behind it.”
             </p>
           </div>
@@ -32,8 +32,8 @@ const Testimonial = () => {
             <h5 className="text-lg font-bold">Ali Bravo</h5>
             <p className="text-sm text-text">
               “We have been able to cancel so many other subscriptions since
-              using NYSC Library. There is no more cross-channel confusion and
-              everyone is much more focused.”
+              using NYSC Abia Library. There is no more cross-channel confusion
+              and everyone is much more focused.”
             </p>
           </div>
 
@@ -42,14 +42,14 @@ const Testimonial = () => {
             {/* <Image src={avatarRichard} className='object-contain w-16 -mt-14' alt='' /> */}
             <h5 className="text-lg font-bold">Richard Watts</h5>
             <p className="text-sm text-text">
-              NYSC Library is a valauable tool that has improved my academic
-              research. A big shout out to the team behind it.”
+              NYSC Abia Library is a valauable tool that has improved my
+              academic research. A big shout out to the team behind it.”
             </p>
           </div>
         </div>
         {/* Button */}
         <div className="mt-8 mb-16 text-center">
-          <ButtonBase as={Link} href="/books">
+          <ButtonBase as={Link} href="/">
             Get Started
           </ButtonBase>
         </div>
