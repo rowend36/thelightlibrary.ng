@@ -24,5 +24,5 @@ export const submitBookSchema = z.object({
     )
     .min(1),
 
-  pdf: z.instanceof(File).refine((e) => e.size > 0, "File is required"),
+  pdf_url: z.string(),
 });

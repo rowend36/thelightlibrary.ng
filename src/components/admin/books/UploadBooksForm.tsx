@@ -4,6 +4,7 @@ import { submitBookAction } from "@/actions/submit_book";
 import { ButtonBase } from "@/components/base/ButtonBase";
 import InputBase from "@/components/base/InputBase";
 import Modal from "@/components/Modal";
+import { uploadAndGetUrl } from "@/config/storage";
 import { Author } from "@/data/models/author";
 import { MONTHS } from "@/utils/constants";
 import errorDescription from "@/utils/error_description";
@@ -23,7 +24,13 @@ export default function UploadBooksForm({
   onSubmit: () => void;
 }) {
   const [state, action, isPending] = useFormState(
-    (_: any, form: FormData) => submitBookAction(form),
+    async (_: any, form: FormData) => {
+      console.log("Uploading pdf....");
+      const pdf_url = await uploadAndGetUrl(form.get("pdf") as File);
+      form.delete("pdf");
+      form.append("pdf_url", pdf_url);
+      return await submitBookAction(form);
+    },
     {
       success: false,
     }
@@ -290,7 +297,7 @@ export default function UploadBooksForm({
             setPdf(e.target.files?.[0] ?? null);
           }}
           name="pdf"
-          accept="application/pdf"
+          accept="application/pdf, application/epub+zip"
           className="opacity-5 bg-primary absolute inset-0 cursor-pointer"
         />
       </label>

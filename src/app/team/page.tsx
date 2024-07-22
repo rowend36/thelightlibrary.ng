@@ -14,7 +14,7 @@ export default function Home() {
       name: "Amupitan Olasunkanmi Paul",
       role: "Team Lead",
       image: paul.src,
-      description: `I'm a graduate of Business Administration from the prestigious University of Ilorin, Kwara State Nigeria and also a National Youth Corps member with state code AB/23C/2696, serving in Abia State Nigeria, specifically at the Abia State Government House.
+      description: `I'm a graduate of Business Administration from the prestigious University of Ilorin, Kwara State Nigeria and also a National Youth Corps member with state code AB/23C/2696, serving in Abia State Nigeria.
 
 I'm a young leader devoted to making impacts and contributing to the development of whatever and wherever I find myself.
 
@@ -25,7 +25,7 @@ We believe this initiative will serve you and contribute to your wholistic devel
 Please reach me on Whataspp via +2347026207147
 `,
       linkText: "View on LinkedIn",
-      link: "https://www.linkedin.com/in/paul-amupitan-368aa2190?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+      link: " https://www.facebook.com/share/oeu8bVryvUwngzza/?mibextid=qi2Omg",
     },
     {
       id: 1,
@@ -33,7 +33,7 @@ Please reach me on Whataspp via +2347026207147
       role: "Software Engineer",
       image: anisha.src,
       description: `Creative software developer dedicated to designing innovative user experiences.
-      Volunteer at the NYSC Abia Library Project.`,
+      Volunteer at the NYSC Abia E-Library Project by Mr. Amupitan Paul.`,
       linkText: "View Profile",
       link: "https://reelest.com.ng",
     },

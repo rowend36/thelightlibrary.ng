@@ -28,7 +28,7 @@ export default function DashboardLayout({
     Record<"sidebar" | "header" | "main" | "footer", ReactElement>
 >) {
   return (
-    <div className="flex md:h-screen bg-gradient-to-tr from-gray-50 to-green-50 min-h-80">
+    <div className="flex md:h-screen max-md:min-h-screen bg-gradient-to-tr from-gray-50 to-green-50 min-h-80">
       <input type={"checkbox"} id={"menu-toggle"} className="hidden peer" />
       <label
         htmlFor="menu-toggle"

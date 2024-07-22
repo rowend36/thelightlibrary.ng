@@ -134,7 +134,7 @@ export async function searchBooks(
 
 const prefixBucket = (e: Book) => {
   if (e.pdf_url)
-    e.pdf_url = `${process.env.SUPABASE_URL}/storage/v1/object/public/${e.pdf_url}`;
+    e.pdf_url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${e.pdf_url}`;
   return e;
 };
 
@@ -157,17 +157,11 @@ export async function searchAuthors(
 
 export async function addBook({
   authors,
-  pdf,
   ...book
-}: Partial<Book> & { authors: Author[]; pdf: File }) {
+}: Book & { authors: Author[] }) {
   return db.transaction(async (trx) => {
-    console.log("Uploading pdf....");
-    const pdf_url = await uploadAndGetUrl(pdf);
-    console.log("Uploading book....");
     const book_id = (
-      await trx<Book>(Type<Table>("books"))
-        .insert({ ...book, pdf_url })
-        .returning("book_id")
+      await trx<Book>(Type<Table>("books")).insert(book).returning("book_id")
     )[0].book_id;
     const new_authors = authors.filter(
       (author) => (author.author_id ?? 0) <= 0

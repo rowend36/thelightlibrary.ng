@@ -32,36 +32,41 @@ export default function ManageBooksPage() {
           <UploadBooksForm onSubmit={() => setShowModal(false)} />
         ) : null}
       </Modal>
-
-      <table className="w-full mt-8">
-        <tr className="bg-slate-500 text-white">
-          <th className="p-1 border-r border-black">ID</th>
-          <th className="p-1 border-r border-black">Title</th>
-          <th className="p-1 border-r border-black">Date Uploaded</th>
-          <th className="p-1 border-black">Actions</th>
-        </tr>
-        {books.map((e) => (
-          <tr key={e.book_id} className="odd:bg-slate-100">
-            <td className="p-1 w-8 border-r border-black">{e.book_id}</td>
-            <td className="p-1 pl-4 border-r border-black">{e.title}</td>
-            <td className="p-1 pl-4">{e.created_at?.toLocaleString()}</td>
-            <td className="w-8 px-4">
-              <ButtonBase
-                size="small"
-                onClick={() => {
-                  deleteBookAction(e.book_id);
-                  setBooks((books) => {
-                    return books.filter((f) => e !== f);
-                  });
-                  refresh();
-                }}
-              >
-                Delete
-              </ButtonBase>
-            </td>
-          </tr>
-        ))}
-      </table>
+      <div className="overflow-auto flex max-w-full">
+        <table className="w-full mt-8 min-w-[480px]">
+          <thead>
+            <tr className="bg-slate-500 text-white">
+              <th className="p-1 border-r border-black">ID</th>
+              <th className="p-1 border-r border-black">Title</th>
+              <th className="p-1 border-r border-black">Date Uploaded</th>
+              <th className="p-1 border-black">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {books.map((e) => (
+              <tr key={e.book_id} className="odd:bg-slate-100">
+                <td className="p-1 w-8 border-r border-black">{e.book_id}</td>
+                <td className="p-1 pl-4 border-r border-black">{e.title}</td>
+                <td className="p-1 pl-4">{e.created_at?.toLocaleString()}</td>
+                <td className="w-8 px-4">
+                  <ButtonBase
+                    size="small"
+                    onClick={() => {
+                      deleteBookAction(e.book_id);
+                      setBooks((books) => {
+                        return books.filter((f) => e !== f);
+                      });
+                      refresh();
+                    }}
+                  >
+                    Delete
+                  </ButtonBase>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }

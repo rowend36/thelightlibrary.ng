@@ -19,7 +19,7 @@ const Footer = () => {
         {/* Logo and social links container */}
         <div className="flex flex-grow flex-col-reverse items-center justify-between space-y-12 lg:flex-col lg:space-y-0 lg:items-start">
           <div className="mx-auto my-6 text-center text-white lg:hidden">
-            Copyright © 2022, All Rights Reserved
+            Copyright © 2024, All Rights Reserved
           </div>
           {/* Logo */}
           <div>
@@ -99,7 +99,7 @@ const Footer = () => {
               </div>
             </form>
             <div className="hidden text-white lg:block">
-              Copyright © 2022, All Rights Reserved
+              Copyright © 2024, All Rights Reserved
             </div>
           </div>
         </div>

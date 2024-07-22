@@ -35,12 +35,16 @@ export default function Modal({
         transition
         className="fixed inset-0 bg-black/30 duration-300 ease-out data-[closed]:opacity-0"
       />
-      <div className="fixed inset-0 flex justify-center items-center">
+      <div
+        className={`fixed inset-0 flex justify-center ${
+          alert ? "items-center" : "items-end sm:items-center"
+        }`}
+      >
         <DialogPanel
           transition
           className={`max-h-[90%] flex flex-col rounded-2xl relative  ${
-            alert ? "w-72" : "w-1/2 min-w-60  max-w-lg"
-          } bg-white p-12 duration-300 ease-out data-[closed]:scale-95 data-[closed]:opacity-50`}
+            alert ? "w-72" : "w-1/2 max-sm:w-full min-w-60  max-w-lg"
+          } bg-white p-4 sm:p-12 duration-300 ease-out data-[closed]:scale-95 data-[closed]:opacity-50`}
         >
           {alert ? null : (
             <ButtonBase
