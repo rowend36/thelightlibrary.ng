@@ -24,7 +24,7 @@ We believe this initiative will serve you and contribute to your wholistic devel
 
 Please reach me on Whataspp via +2347026207147
 `,
-      linkText: "View on LinkedIn",
+      linkText: "View Profile",
       link: " https://www.facebook.com/share/oeu8bVryvUwngzza/?mibextid=qi2Omg",
     },
     {
