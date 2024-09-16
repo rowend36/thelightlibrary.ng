@@ -1,10 +1,10 @@
 "use client";
-import { AppLogo } from "../AppLogo";
+
+import { useLocation } from "react-router-dom";
 import Link from "../base/Link";
-import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
-  const route = usePathname();
+  const route = useLocation().pathname;
   return (
     <>
       <Link

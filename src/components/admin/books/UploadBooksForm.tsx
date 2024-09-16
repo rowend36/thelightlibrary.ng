@@ -1,13 +1,9 @@
-import { ActionResponse } from "@/actions/ActionResponse";
-import { searchAuthorsAction } from "@/actions/search_authors";
-import { submitBookAction } from "@/actions/submit_book";
-import { ButtonBase } from "@/components/base/ButtonBase";
-import InputBase from "@/components/base/InputBase";
-import Modal from "@/components/Modal";
-import { uploadAndGetUrl } from "@/config/storage";
-import { Author } from "@/data/models/author";
-import { MONTHS } from "@/utils/constants";
-import errorDescription from "@/utils/error_description";
+// @ts-nocheck
+import { ButtonBase } from "../../base/ButtonBase";
+import InputBase from "../../base/InputBase";
+import Modal from "../../Modal";
+// import { uploadAndGetUrl } from "../../config/storage";
+import { Author } from "../../../data/models/author";
 import {
   Combobox,
   ComboboxInput,
@@ -16,25 +12,25 @@ import {
 } from "@headlessui/react";
 import { DocumentUpload, Minus } from "iconsax-react";
 import { startTransition, useEffect, useRef, useState } from "react";
-import { useFormState } from "react-dom";
+import errorDescription from "../../../utils/error_description";
 
 export default function UploadBooksForm({
   onSubmit,
 }: {
   onSubmit: () => void;
 }) {
-  const [state, action, isPending] = useFormState(
-    async (_: any, form: FormData) => {
-      console.log("Uploading pdf....");
-      const pdf_url = await uploadAndGetUrl(form.get("pdf") as File);
-      form.delete("pdf");
-      form.append("pdf_url", pdf_url);
-      return await submitBookAction(form);
-    },
-    {
-      success: false,
-    }
-  );
+  // const [state, action, isPending] = useFormState(
+  //   async (_: any, form: FormData) => {
+  //     console.log("Uploading pdf....");
+  //     // const pdf_url = await uploadAndGetUrl(form.get("pdf") as File);
+  //     // form.delete("pdf");
+  //     // form.append("pdf_url", pdf_url);
+  //     // return await submitBookAction(form);
+  //   },
+  //   {
+  //     success: false,
+  //   }
+  // );
   const [authors, setAuthors] = useState<Author[]>([]);
   const maxId = useRef(-1);
   const addAuthor = () => {
@@ -61,13 +57,13 @@ export default function UploadBooksForm({
 
       if (!query) return;
       fetchController.current.blockUntil = Date.now() + 5000;
-      searchAuthorsAction(query).then((authors) => {
-        if (fetchController.current.lastTag <= tag) {
-          setSuggestedAuthors(authors);
-          fetchController.current.lastTag = tag;
-        }
-        if (fetchController.current.active !== query) resend();
-      });
+      // searchAuthorsAction(query).then((authors) => {
+      //   if (fetchController.current.lastTag <= tag) {
+      //     setSuggestedAuthors(authors);
+      //     fetchController.current.lastTag = tag;
+      //   }
+      //   if (fetchController.current.active !== query) resend();
+      // });
     },
     [query]
   );
@@ -84,8 +80,8 @@ export default function UploadBooksForm({
   const resetForm = () => {
     startTransition(() => {
       formRef.current?.reset();
-      state.success = false;
-      state.errors = state.data = state.message = undefined;
+      // state.success = false;
+      // state.errors = state.data = state.message = undefined;
       setTitle("");
       setAuthors([]);
       setDescription("");
@@ -93,7 +89,7 @@ export default function UploadBooksForm({
       setPublishedDate("");
     });
   };
-  console.log(state);
+  // console.log(state);
   return (
     <form action={action} ref={formRef}>
       <Modal alert open={state.success} onClose={onSubmit}>

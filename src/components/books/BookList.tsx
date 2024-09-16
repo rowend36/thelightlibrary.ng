@@ -1,10 +1,10 @@
-import { Book } from "@/data/models/book";
-import { getBooks } from "@/services/book_service";
+import { Book } from "../../data/models/book";
+
 import BookItem from "./BookItem";
 
 export default function BookList({
   books,
-  category,
+  // category,
   title,
 }: {
   books: Book[];

@@ -1,5 +1,5 @@
 "use client";
-import { User } from "@/data/models/user";
+import { User } from "../../data/models/user";
 import { createContext, useContext } from "react";
 const DashboardContext = createContext({
   user: null as User | null,

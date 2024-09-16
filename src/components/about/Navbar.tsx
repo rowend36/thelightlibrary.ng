@@ -1,28 +1,28 @@
-"use client";
-import { User } from "@/data/models/user";
-import { Menu } from "iconsax-react";
-import NextLink from "next/link";
-import { usePathname } from "next/navigation";
+import { User } from "../../data/models/user";
+
+import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { AppLogo } from "../AppLogo";
-import AvatarImage from "../AvatarImage";
-import { ButtonBase } from "../base/ButtonBase";
+
 import Link from "../base/Link";
+
+import { SearchBar } from "../base/SearchBar";
 
 const Navbar = ({ user }: { user?: User }) => {
   console.log({ user });
   const [toggleMenu, setToggleMenu] = useState(false);
-  const route = usePathname();
+  const route = useLocation().pathname;
   const links = (
     <>
       {/* <Link href="/upload">Upload</Link>
       <Link href="#">Product</Link> */}
-      <Link href="/about" disabled={route === "/about"}>
-        About Us
-      </Link>
       <Link href="/team" disabled={route === "/team"}>
-        Meet the team
+        About Author
       </Link>
+      <Link href="/books" disabled={route === "/books"}>
+        Books
+      </Link>
+
       {/* <Link href="#">Careers</Link>
       <Link href="#">Community</Link> */}
     </>
@@ -30,43 +30,28 @@ const Navbar = ({ user }: { user?: User }) => {
   return (
     <nav className="relative container  py-2 border-b ">
       {/* Flex Container */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center">
         {/* Hamburger Icon */}
         <button
           className={
             toggleMenu
-              ? "open block hamburger md:hidden focus:outline-none text-primary"
-              : "block hamburger md:hidden focus:outline-none text-text"
+              ? "open block hamburger md:hidden focus:outline-none text-primary mr-4"
+              : "block hamburger md:hidden focus:outline-none text-text mr-4"
           }
           onClick={() => setToggleMenu(!toggleMenu)}
         >
-          <Menu size={20} />
+          <i className="bx bx-menu bx-lg" />
         </button>
         <AppLogo />
         {/* Menu Items */}
-        <div className="hidden xl:space-x-6 space-x-3 md:flex">{links}</div>
-        {/* Button */}
-        <div>
-          <ButtonBase
-            as={NextLink}
-            className="hidden md:inline-block align-middle ml-2 lg:ml-4"
-            href="/"
-            variant="contained"
-          >
-            Browse
-          </ButtonBase>
-          <ButtonBase
-            as={NextLink}
-            blank
-            className={`inline-block align-middle ml-2 lg:ml-4 ${
-              user ? "!p-0" : ""
-            } hover:bg-primaryLight`}
-            href={user ? "/login" : "/admin"}
-            variant="contained"
-          >
-            {user ? <AvatarImage user={user} /> : <span>Login</span>}
-          </ButtonBase>
+        <div className="flex-1"></div>
+        <div className="hidden xl:space-x-6 space-x-3 md:flex md:mx-8">
+          {links}
         </div>
+        <div className="flex-1"></div>
+        {/* Button */}
+
+        <SearchBar className="flex gap-4" />
       </div>
 
       {/* Mobile Menu */}

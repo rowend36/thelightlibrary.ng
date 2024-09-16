@@ -1,4 +1,4 @@
-import { ActionResponse } from "@/actions/ActionResponse";
+import { ActionResponse } from "../data/actions/ActionResponse";
 
 export default function errorDescription(
   state: ActionResponse,

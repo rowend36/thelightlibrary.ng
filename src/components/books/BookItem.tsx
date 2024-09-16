@@ -1,12 +1,10 @@
-import { Book } from "@/data/models/book";
-import Image from "next/image";
+import { Book } from "../../data/models/book";
 import { ButtonBase } from "../base/ButtonBase";
-import Link from "../base/Link";
 
 export default function BookItem({ book }: { book: Book }) {
   return (
     <div className="flex items-center bg-white rounded-lg shadow-sm border-gray-100 hover:border-primaryLight active:border-primary border pr-2 h-24">
-      <Image
+      <img
         className="min-h-20 self-stretch w-auto aspect-[3/4] object-cover rounded-t-lg"
         src="https://th.bing.com/th?id=OIP.y0dUr_AsBWaFQF8FpNrqZgHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
         width={320}
@@ -31,6 +29,7 @@ export default function BookItem({ book }: { book: Book }) {
             </p>
           </div>
           {book.pdf_url ? (
+            /* @ts-expect-error Hello */
             <ButtonBase size="small" as="a" href={book.pdf_url} target="_blank">
               Download
             </ButtonBase>

@@ -17,6 +17,7 @@ export function SearchBar({
         name="query"
         type="search"
         className="flex-grow"
+        placeholder="Search for anything..."
         startIcon={<SearchNormal />}
       />
       <ButtonBase type="submit">Search</ButtonBase>{" "}

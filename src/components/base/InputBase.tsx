@@ -1,18 +1,13 @@
-import React, {
-  Component,
-  FunctionComponent,
-  ReactElement,
-  ReactNode,
-} from "react";
 import {
+  Description,
   Field,
   Input,
-  Description,
-  Label,
   InputProps,
+  Label,
   Textarea,
   TextareaProps,
 } from "@headlessui/react";
+import React, { Component, FunctionComponent, ReactNode } from "react";
 
 export type InputBaseProps = Omit<InputProps & TextareaProps, "as"> & {
   startIcon?: ReactNode;
@@ -45,7 +40,7 @@ const InputBase: React.FC<InputBaseProps> = ({
   return (
     <Field
       disabled={props.disabled}
-      className={`${props.className ?? ""} min-w-36`}
+      className={`${props.className ?? ""} min-w-56 lg:min-w-96`}
     >
       {props.label ? (
         <Label className="pb-2 block text-xs">{props.label}</Label>
@@ -62,18 +57,16 @@ const InputBase: React.FC<InputBaseProps> = ({
           as={as}
           onChange={setValue && ((e: any) => setValue(e.target.value))}
           {...props}
-          className={`${
+          className={`rounded-md outline-none border focus:border-2 px-4 text-text bg-gray-100 w-full ${
             !props.label && floatingPlaceholder
               ? "peer focus:placeholder:opacity-0"
               : ""
-          } rounded-2xl ${
-            as === "textarea" ? "h-full py-3 focus:py-[11px]" : "h-11"
-          } outline-none border focus:border-2 px-4 text-darkBlue ${
+          } ${as === "textarea" ? "h-full py-3 focus:py-[11px]" : "h-12"} ${
             error
               ? "input-error border-red-500"
-              : "hover:border-primary focus:border-primary"
-          } w-full ${startIcon ? "pl-12" : ""} ${endIcon ? "pr-12" : ""} ${
-            props.disabled ? "bg-gray-200" : ""
+              : "hover:border-primaryLight focus:border-primaryLight"
+          } ${startIcon ? "pl-12" : ""} ${endIcon ? "pr-12" : ""} ${
+            props.disabled ? "bg-gray-50" : ""
           }`}
         >
           {options && as !== "input"

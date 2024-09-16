@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
-import { default as NextLink, LinkProps } from "next/link";
+import { Link as NextLink, LinkProps } from "react-router-dom";
 
 export default function Link(
-  props: LinkProps & {
+  props: Omit<LinkProps, "to"> & {
+    href: string;
     children: ReactNode;
     className?: string;
     disabled?: boolean;
@@ -10,13 +11,14 @@ export default function Link(
 ) {
   return (
     <NextLink
+      to={props.href}
       {...props}
-      className={` text-darkBlue   py-2 -my-1 px-2 rounded-lg ${
+      className={` text-primary text-lg py-2 -my-1 px-2 rounded-lg ${
         props.className
       } ${
         props.disabled
           ? "cursor-default opacity-75"
-          : "hover:text-primary hover:bg-green-50"
+          : "hover:text-primaryLight hover:bg-green-50"
       }`}
     />
   );

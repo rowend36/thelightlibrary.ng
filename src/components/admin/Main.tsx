@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, use } from "react";
+import { ReactNode } from "react";
 import { DashboardProps, DashboardProvider } from "./DashboardContext";
 
 export default function Main({
@@ -9,9 +9,12 @@ export default function Main({
   children: ReactNode;
   props: Promise<DashboardProps>;
 }): JSX.Element {
+  const propsLoaded = void props; //usePromise(props);
   return (
     <>
-      <DashboardProvider value={use(props)}>{children}</DashboardProvider>
+      {propsLoaded ? (
+        <DashboardProvider value={propsLoaded}>{children}</DashboardProvider>
+      ) : null}
     </>
   );
 }

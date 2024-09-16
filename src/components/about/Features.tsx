@@ -1,6 +1,5 @@
-import React, { ReactNode } from "react";
-import Image from "next/image";
-import booksImage from "@/assets/images/books.jpg";
+import { ReactNode } from "react";
+import booksImage from "../../assets/images/books.jpg";
 
 const Features = () => {
   return (
@@ -18,7 +17,7 @@ const Features = () => {
             every kind of user.
           </p>
           <div className="w-full max-md:max-w-sm rounded-sm md:relative md:w-[calc(100%+2rem)] lg:w-[calc(100%+6rem)] md:self-end max-w-none flex-grow">
-            <Image
+            <img
               src={booksImage}
               alt="Books"
               className="object-cover max-w-2xl w-full"
