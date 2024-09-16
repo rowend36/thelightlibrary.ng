@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "incremental": true,
-    "tsBuildInfoFile": ".node.tsbuildinfo",
+    "tsBuildInfoFile": "ssr/.node.tsbuildinfo",
     "lib": [
       "ES2023"
     ],
