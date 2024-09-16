@@ -5,7 +5,7 @@ import Hero from "../components/home/Hero";
 import Testimonial from "../components/home/Testimonial";
 import Footer from "../components/admin/Footer";
 
-export default function Home() {
+export default function NotFound() {
   return (
     <>
       <Navbar />

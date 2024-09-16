@@ -7,7 +7,12 @@ import {
   Textarea,
   TextareaProps,
 } from "@headlessui/react";
-import React, { Component, FunctionComponent, ReactNode } from "react";
+import React, {
+  ChangeEvent,
+  Component,
+  FunctionComponent,
+  ReactNode,
+} from "react";
 
 export type InputBaseProps = Omit<InputProps & TextareaProps, "as"> & {
   startIcon?: ReactNode;
@@ -18,7 +23,7 @@ export type InputBaseProps = Omit<InputProps & TextareaProps, "as"> & {
   label?: string;
   description?: string;
   className?: string;
-  setValue?: (value: any) => void;
+  setValue?: (value: string) => void;
   options?: string[];
   error?: boolean | string;
   optional?: boolean;
@@ -47,15 +52,18 @@ const InputBase: React.FC<InputBaseProps> = ({
       ) : null}
       <div className="relative w-full h-full">
         {startIcon && (
-          <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-primaryLight">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-4 focus:text-primaryLight text-text">
             {startIcon}
           </div>
         )}
         <Component
           required={!optional}
-          // @ts-ignore The value of as causes issues
+          // @ts-expect-error The value of as causes issues
           as={as}
-          onChange={setValue && ((e: any) => setValue(e.target.value))}
+          onChange={
+            setValue &&
+            ((e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value))
+          }
           {...props}
           className={`rounded-md outline-none border focus:border-2 px-4 text-text bg-gray-100 w-full ${
             !props.label && floatingPlaceholder
@@ -82,7 +90,7 @@ const InputBase: React.FC<InputBaseProps> = ({
             className={`block text-xs peer-placeholder-shown:opacity-0 peer-focus:opacity-100 transition-opacity absolute -top-2 left-3 bg-white px-1 text-darkGrayishBlue/75 ${
               error
                 ? "text-red-600"
-                : "peer-hover:text-primaryHover peer-focus:text-primaryHover"
+                : "peer-hover:text-primaryLight peer-focus:text-primaryLight"
             } peer-hover:font-normal peer-focus:font-normal z-20 font-semibold`}
           >
             {props.placeholder}
