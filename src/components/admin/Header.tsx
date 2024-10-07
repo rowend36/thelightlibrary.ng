@@ -2,14 +2,21 @@ import { User } from "../../data/models/user";
 
 import AvatarImage from "../AvatarImage";
 
-export default function Header({ user: userPromise }: { user: Promise<User> }) {
+export default function Header({
+  user: userPromise,
+  title,
+}: {
+  user: Promise<User>;
+  title: string;
+}) {
   const user: any = void userPromise;
   return (
-    <>
-      <h1 className="max-sm:hidden text-lg font-bold text-darkGrayishBlue">
-        NYSC ABIA E-LIBRARY DASHBOARD
+    <div className="container lg:px-8 xl:px-12">
+      <h1 className="max-sm:pl-8 max-sm:text-xl text-2xl font-bold text-text sm:mt-4">
+        {title}
       </h1>
       <div className="flex-grow" />
+
       {user ? (
         <>
           <div className="mr-2 text-end">
@@ -19,6 +26,6 @@ export default function Header({ user: userPromise }: { user: Promise<User> }) {
           <AvatarImage user={user} />
         </>
       ) : null}
-    </>
+    </div>
   );
 }

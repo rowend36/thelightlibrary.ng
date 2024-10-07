@@ -13,12 +13,10 @@ export default function Link(
     <NextLink
       to={props.href}
       {...props}
-      className={` text-primary text-lg py-2 -my-1 px-2 rounded-lg ${
-        props.className
-      } ${
+      className={` text-primary py-2 -my-1 px-2 rounded-lg ${props.className} ${
         props.disabled
           ? "cursor-default opacity-75"
-          : "hover:text-primaryLight hover:bg-green-50"
+          : "hover:text-primaryLight font-bold"
       }`}
     />
   );

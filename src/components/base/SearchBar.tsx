@@ -2,6 +2,7 @@ import { SearchNormal } from "iconsax-react";
 import { ButtonBase } from "./ButtonBase";
 import InputBase from "./InputBase";
 import { InputBaseProps } from "./InputBase";
+import { Form } from "react-router-dom";
 
 export function SearchBar({
   className,
@@ -11,7 +12,7 @@ export function SearchBar({
 } & InputBaseProps) {
   // TODO: Use Next.js Form Actions where possible
   return (
-    <form className={className} action="/search">
+    <Form className={className} action="/search">
       <InputBase
         {...props}
         name="query"
@@ -21,6 +22,6 @@ export function SearchBar({
         startIcon={<SearchNormal />}
       />
       <ButtonBase type="submit">Search</ButtonBase>{" "}
-    </form>
+    </Form>
   );
 }

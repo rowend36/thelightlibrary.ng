@@ -1,12 +1,31 @@
 import ReactDOMServer from "react-dom/server";
-import { StaticRouter } from "react-router-dom/server";
+import {
+  createStaticHandler,
+  createStaticRouter,
+  StaticHandlerContext,
+  StaticRouterProvider,
+} from "react-router-dom/server";
 import React from "react";
-import App from "../src/App";
-// import App from "./App";
+import routes from "../src/routes";
 
-export function SSRRender(url: string | Partial<Location>) {
+const handler = createStaticHandler(routes);
+export async function SSRRender(url: string) {
+  const request = new Request(
+    new URL(url, "http://thelightlibrary.vercel.app/")
+  );
+  console.log(request.url);
+  let context = await handler.query(request);
+  if (context instanceof Request) {
+    context = await handler.query(request);
+    if (context instanceof Request) {
+      throw Error(`Infinite Redirect for url ${url}!!!`);
+    }
+  }
   return ReactDOMServer.renderToString(
-    <StaticRouter location={url}>{<App />}</StaticRouter>
+    <StaticRouterProvider
+      router={createStaticRouter(routes, context as StaticHandlerContext)}
+      context={context as StaticHandlerContext}
+    />
   );
 }
 

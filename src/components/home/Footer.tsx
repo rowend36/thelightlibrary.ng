@@ -1,8 +1,8 @@
-import facebookLogo from "../assets/images/icon-facebook.svg";
-import youtubeLogo from "../assets/images/icon-youtube.svg";
-import twitterLogo from "../assets/images/icon-twitter.svg";
-import pinterestLogo from "../assets/images/icon-pinterest.svg";
-import instagramLogo from "../assets/images/icon-instagram.svg";
+import facebookLogo from "../../assets/images/icon-facebook.svg";
+import youtubeLogo from "../../assets/images/icon-youtube.svg";
+import twitterLogo from "../../assets/images/icon-twitter.svg";
+import pinterestLogo from "../../assets/images/icon-pinterest.svg";
+import instagramLogo from "../../assets/images/icon-instagram.svg";
 import InputBase from "../base/InputBase";
 import { ButtonBase } from "../base/ButtonBase";
 import { AppLogo } from "../AppLogo";
@@ -20,7 +20,7 @@ const Footer = () => {
           </div>
           {/* Logo */}
           <div>
-            <AppLogo />
+            <AppLogo className="invert brightness-0" />
           </div>
           {/* Social Links Container */}
           <div className="flex justify-center space-x-4">
@@ -47,17 +47,17 @@ const Footer = () => {
           </div>
         </div>
         {/* List Container */}
-        <div className="flex flex-grow flex-wrap gap-x-32 gap-y-8">
-          <div className="flex md:justify-around flex-wrap gap-x-32 gap-y-4">
+        <div className="flex flex-grow max-2xl:basis-1/2  flex-wrap gap-x-32 gap-y-8">
+          <div className="flex lg:justify-around flex-wrap gap-x-32 gap-y-4">
             <div className="flex flex-col space-y-3 text-white">
               <Link to="/" className="hover:text-primary">
                 Home
               </Link>
-              <Link to="/search" className="hover:text-primary">
-                Search
+              <Link to="/books" className="hover:text-primary">
+                Find any book..
               </Link>
-              <Link to="/team" className="hover:text-primary">
-                Meet the team
+              <Link to="/blog" className="hover:text-primary">
+                Blog
               </Link>
               <Link to="/about" className="hover:text-primary">
                 About Us
@@ -81,13 +81,13 @@ const Footer = () => {
                 <InputBase
                   type="text"
                   label="Stay updated in your inbox"
-                  className="flex-1"
+                  className="flex-1 max-w-md"
                   placeholder="Enter your email"
                 />
                 <ButtonBase>Go</ButtonBase>
               </div>
             </form>
-            <div className="hidden text-white lg:block">
+            <div className="mt-8 hidden text-white lg:block">
               Copyright © 2024, All Rights Reserved
             </div>
           </div>

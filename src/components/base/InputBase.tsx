@@ -20,8 +20,8 @@ export type InputBaseProps = Omit<InputProps & TextareaProps, "as"> & {
   endIcon?: ReactNode;
   disabled?: boolean;
   floatingPlaceholder?: boolean;
-  label?: string;
-  description?: string;
+  label?: ReactNode;
+  description?: ReactNode;
   className?: string;
   setValue?: (value: string) => void;
   options?: string[];
@@ -45,14 +45,14 @@ const InputBase: React.FC<InputBaseProps> = ({
   return (
     <Field
       disabled={props.disabled}
-      className={`${props.className ?? ""} min-w-56 lg:min-w-96`}
+      className={`${props.className ?? ""} min-w-56 lg:min-w-72 xl:min-w-96`}
     >
       {props.label ? (
         <Label className="pb-2 block text-xs">{props.label}</Label>
       ) : null}
       <div className="relative w-full h-full">
         {startIcon && (
-          <div className="absolute inset-y-0 left-0 flex items-center pl-4 focus:text-primaryLight text-text">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-4 focus:text-primaryLight text-text group-[.search-dark]:text-gray-100">
             {startIcon}
           </div>
         )}
@@ -65,16 +65,20 @@ const InputBase: React.FC<InputBaseProps> = ({
             ((e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value))
           }
           {...props}
-          className={`rounded-md outline-none border focus:border-2 px-4 text-text bg-gray-100 w-full ${
+          className={`rounded-md outline-none border group-[.search-dark]:border-2 focus:border-2 px-4  w-full ${
             !props.label && floatingPlaceholder
               ? "peer focus:placeholder:opacity-0"
               : ""
           } ${as === "textarea" ? "h-full py-3 focus:py-[11px]" : "h-12"} ${
             error
               ? "input-error border-red-500"
-              : "hover:border-primaryLight focus:border-primaryLight"
+              : !props.disabled
+              ? "hover:border-primaryLight focus:border-primaryLight"
+              : ""
           } ${startIcon ? "pl-12" : ""} ${endIcon ? "pr-12" : ""} ${
-            props.disabled ? "bg-gray-50" : ""
+            props.disabled
+              ? "bg-gray-200 text-gray-500"
+              : "bg-gray-100 text-text"
           }`}
         >
           {options && as !== "input"
@@ -87,7 +91,7 @@ const InputBase: React.FC<InputBaseProps> = ({
         </Component>
         {!props.label && props.placeholder && floatingPlaceholder ? (
           <Label
-            className={`block text-xs peer-placeholder-shown:opacity-0 peer-focus:opacity-100 transition-opacity absolute -top-2 left-3 bg-white px-1 text-darkGrayishBlue/75 ${
+            className={`block text-xs peer-placeholder-shown:opacity-0 peer-focus:opacity-100 transition-opacity absolute -top-2 left-3 bg-white px-1 ${
               error
                 ? "text-red-600"
                 : "peer-hover:text-primaryLight peer-focus:text-primaryLight"
@@ -102,15 +106,14 @@ const InputBase: React.FC<InputBaseProps> = ({
           </div>
         )}
       </div>
-      {props.description ||
-        (error && typeof error === "string" && (
-          <Description className={`text-sm `}>
-            {error ? (
-              <p className={error ? "text-red-600" : ""}>{error}</p>
-            ) : undefined}
-            {props.description}
-          </Description>
-        ))}
+      {(props.description || (error && typeof error === "string")) && (
+        <Description className={`text-sm mt-4`} as="div">
+          {error ? (
+            <p className={error ? "text-red-600" : ""}>{error}</p>
+          ) : undefined}
+          {props.description}
+        </Description>
+      )}
     </Field>
   );
 };

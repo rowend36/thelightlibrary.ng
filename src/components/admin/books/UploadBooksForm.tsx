@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ButtonBase } from "../../base/ButtonBase";
 import InputBase from "../../base/InputBase";
 import Modal from "../../Modal";
@@ -10,35 +9,39 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
-import { DocumentUpload, Minus } from "iconsax-react";
-import { startTransition, useEffect, useRef, useState } from "react";
+import { DocumentUpload, GalleryAdd, Minus } from "iconsax-react";
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import errorDescription from "../../../utils/error_description";
+import { Form } from "react-router-dom";
+import { ActionResponse } from "../../../data/actions/ActionResponse";
+import { submitBookFn } from "../../../data/actions/submitBookFn";
+import { APIError, ValidationError } from "../../../data/actions/queryFn";
+import Loader from "../../Loader";
 
 export default function UploadBooksForm({
   onSubmit,
 }: {
   onSubmit: () => void;
 }) {
-  // const [state, action, isPending] = useFormState(
-  //   async (_: any, form: FormData) => {
-  //     console.log("Uploading pdf....");
-  //     // const pdf_url = await uploadAndGetUrl(form.get("pdf") as File);
-  //     // form.delete("pdf");
-  //     // form.append("pdf_url", pdf_url);
-  //     // return await submitBookAction(form);
-  //   },
-  //   {
-  //     success: false,
-  //   }
-  // );
+  const [state, setState] = useState<ActionResponse>({});
+  const [price, setPrice] = useState<string>();
+  const [isPending, setPending] = useState(false);
+  const [bookCover, setBookCover] = useState<File>();
+
   const [authors, setAuthors] = useState<Author[]>([]);
   const maxId = useRef(-1);
-  const addAuthor = () => {
+  const addAuthor = useCallback(() => {
     setAuthors([
       ...authors,
       { author_id: maxId.current--, name: "", biography: "" },
     ]);
-  };
+  }, [authors]);
   const [query, setQuery] = useState("");
   const [suggestedAuthors, setSuggestedAuthors] = useState<Author[]>([]);
   const fetchController = useRef({
@@ -76,6 +79,17 @@ export default function UploadBooksForm({
       new Date().getMonth().toString().padStart(2, "0")
   );
   const [pdf, setPdf] = useState<File | null>(null);
+  const [blobImage, setBlobImage] = useState<string>();
+  useEffect(() => {
+    if (bookCover) {
+      const url = URL.createObjectURL(bookCover!);
+      setBlobImage(url);
+      return () => {
+        setBlobImage(undefined);
+        URL.revokeObjectURL(url);
+      };
+    }
+  }, [bookCover]);
   const formRef = useRef<HTMLFormElement | null>(null);
   const resetForm = () => {
     startTransition(() => {
@@ -89,10 +103,35 @@ export default function UploadBooksForm({
       setPublishedDate("");
     });
   };
+
+  useEffect(() => {
+    if (authors.length === 0) addAuthor();
+  }, [authors, addAuthor]);
   // console.log(state);
   return (
-    <form action={action} ref={formRef}>
-      <Modal alert open={state.success} onClose={onSubmit}>
+    <Form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setPending(true);
+        try {
+          await submitBookFn(new FormData(e.target as HTMLFormElement));
+          setState({
+            success: true,
+            message: "Book added successfully",
+          });
+        } catch (e) {
+          setState({
+            success: false,
+            errors: e instanceof ValidationError ? e.cause?.errors : undefined,
+            message:
+              e instanceof APIError ? e.message : (e as object).toString(),
+          });
+        }
+        setPending(false);
+      }}
+      ref={formRef}
+    >
+      <Modal alert open={!!state.success} onClose={onSubmit}>
         <h3 className="text-center">Book Uploaded Successfully</h3>
         <div className="flex-grow" />
         <ButtonBase variant="transparent" className="my-4" onClick={resetForm}>
@@ -102,9 +141,45 @@ export default function UploadBooksForm({
           Dismiss
         </ButtonBase>
       </Modal>
-      {state.success === false && state.message ? (
-        <div className="text-red-500 mb-8">{state.message}</div>
-      ) : null}
+
+      <label
+        htmlFor="book_cover"
+        className=" relative text-center cursor-pointer overflow-hidden hover:border-primary h-32 w-56 max-w-full justify-end rounded-xl mx-auto text-gray-400 flex flex-col items-center border p-4 mt-4 appearance-none "
+      >
+        {blobImage ? (
+          <img
+            src={blobImage}
+            className="absolute top-0 left-0 object-contain object-center w-full h-full"
+          />
+        ) : (
+          <GalleryAdd
+            className={`${
+              bookCover ? "text-primary" : "text-gray-400"
+            } h-20 w-20 m-1`}
+          />
+        )}
+        {bookCover ? (
+          <span className="text-xs text-ellipsis relative z-10">
+            {bookCover.name}
+          </span>
+        ) : (
+          <i className="text-xs">Drag here or Click to upload Book Cover</i>
+        )}
+        <input
+          type="file"
+          required
+          id="book_cover"
+          onChange={(e) => {
+            setBookCover(e.target.files?.[0] ?? undefined);
+          }}
+          name="book_cover"
+          accept="image/*"
+          className="opacity-[0.02] bg-primary absolute inset-0 cursor-pointer"
+        />
+      </label>
+      <p className="text-red-500 text-center pb-8">
+        {errorDescription(state, "pdf") || isPending}
+      </p>
       <InputBase
         error={errorDescription(state, "title")}
         type="text"
@@ -112,6 +187,15 @@ export default function UploadBooksForm({
         value={title}
         setValue={setTitle}
         placeholder="Book Title"
+        className="mb-4"
+      />
+      <InputBase
+        error={errorDescription(state, "price")}
+        type="number"
+        name="price"
+        value={price}
+        setValue={setPrice}
+        placeholder="Book Price"
         className="mb-4"
       />
       <InputBase
@@ -144,30 +228,30 @@ export default function UploadBooksForm({
           <div key={i}>
             <input
               type="hidden"
-              name="authors[].author_id"
+              name={"authors[" + i + "].author_id"}
               value={author.author_id}
             />
             <div className="flex justify-between items-center mb-1">
-              <h4 className="text-sm font-bold text-darkGrayishBlue">
-                Author #{i}
-              </h4>
-              <ButtonBase
-                variant="transparent"
-                onClick={() => {
-                  setAuthors(
-                    authors.filter((e) => e.author_id !== author.author_id)
-                  );
-                }}
-                size="icon"
-                blank
-                className="hover:bg-red-50"
-              >
-                <Minus className="text-red-500" />
-              </ButtonBase>
+              <h4 className="text-sm font-bold text-gray-400">Author #{i}</h4>
+              {authors.length > 1 ? (
+                <ButtonBase
+                  variant="transparent"
+                  onClick={() => {
+                    setAuthors(
+                      authors.filter((e) => e.author_id !== author.author_id)
+                    );
+                  }}
+                  size="icon"
+                  blank
+                  className="hover:bg-red-50"
+                >
+                  <Minus className="text-red-500" />
+                </ButtonBase>
+              ) : null}
             </div>
 
             <Combobox
-              name="authors[].name"
+              name={"authors[" + i + "].name"}
               value={author.name}
               onChange={(value) => {
                 if (!value || typeof value === "string") {
@@ -232,7 +316,7 @@ export default function UploadBooksForm({
             <InputBase
               as="textarea"
               type="text"
-              name="authors[].biography"
+              name={"authors[" + i + "].biography"}
               error={errorDescription(state, "authors", i, "biography")}
               disabled={author.author_id > 0}
               value={author.biography}
@@ -259,9 +343,7 @@ export default function UploadBooksForm({
         ))
       ) : (
         <div className="text-center mb-4">
-          <i className="text-lg italic text-darkGrayishBlue">
-            No authors added
-          </i>
+          <i className="text-lg italic text-gray-400">No authors added</i>
         </div>
       )}
       <ButtonBase
@@ -271,19 +353,20 @@ export default function UploadBooksForm({
       >
         Add Author
       </ButtonBase>
+      <p className="text-red-500 text-center">
+        {errorDescription(state, "authors") || isPending}
+      </p>
       <label
         htmlFor="pdf"
-        className=" relative text-center cursor-pointer overflow-hidden hover:border-primary h-32 w-56 max-w-full justify-end rounded-xl mx-auto text-darkGrayishBlue flex flex-col items-center border p-4 mt-4 appearance-none "
+        className=" relative text-center cursor-pointer overflow-hidden hover:border-primary h-32 w-56 max-w-full justify-end rounded-xl mx-auto text-gray-400 flex flex-col items-center border p-4 mt-4 appearance-none "
       >
         <DocumentUpload
-          className={`${
-            pdf ? "text-primary" : "text-darkGrayishBlue"
-          } h-20 w-20 m-1`}
+          className={`${pdf ? "text-primary" : "text-gray-400"} h-20 w-20 m-1`}
         />
         {pdf ? (
           <span className="text-xs text-ellipsis">{pdf.name}</span>
         ) : (
-          <i>Drag here or Click to upload PDF</i>
+          <i className="text-xs">Drag here or Click to upload PDF</i>
         )}
         <input
           type="file"
@@ -298,7 +381,7 @@ export default function UploadBooksForm({
         />
       </label>
       <p className="text-red-500 text-center">
-        {errorDescription(state, "pdf") || isPending}
+        {errorDescription(state, "pdf_url") || isPending}
       </p>
       {state.success === false && state.message ? (
         <div className="text-red-500 mt-8 text-center">{state.message}</div>
@@ -308,8 +391,8 @@ export default function UploadBooksForm({
         className="mx-auto block mt-8"
         disabled={isPending}
       >
-        Submit
+        {isPending ? <Loader /> : "Submit"}
       </ButtonBase>
-    </form>
+    </Form>
   );
 }

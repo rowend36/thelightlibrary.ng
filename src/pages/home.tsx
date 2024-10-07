@@ -1,27 +1,24 @@
 import Navbar from "../components/home/Navbar";
 import CallToAction from "../components/home/CallToAction";
-import Features from "../components/home/Features";
+import SectionOne from "../components/home/SectionOne";
 import Hero from "../components/home/Hero";
 import Testimonial from "../components/home/Testimonial";
-import Footer from "../components/admin/Footer";
+import Footer from "../components/home/Footer";
+import BlogSection from "../components/home/VLog";
+import RecommendedBooks from "../components/home/RecommendedBooks";
+import BookSlider from "../components/home/BookSlider";
 
 export default function Home() {
   return (
     <>
       <Navbar />
       <Hero />
-
-      <Features />
-      {/* <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <ul>
-          {todos?.map((todo: any) => (
-            <li key={undefined}>{todo}</li>
-          ))}
-        </ul>
-      </main> */}
+      <SectionOne />
+      <BookSlider />
       <Testimonial />
+      <RecommendedBooks />
+      <BlogSection />
       <CallToAction />
-
       <Footer />
     </>
   );

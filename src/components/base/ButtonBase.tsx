@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from "@headlessui/react";
 type ButtonBaseProps = ButtonProps<"button"> & {
-  [key: string]: any;
+  [key: string]: unknown;
 } & {
   as?: any;
   variant?: "contained" | "outlined" | "transparent";
@@ -24,11 +24,11 @@ export function ButtonBase({
           size === "icon"
             ? "p-2"
             : size === "medium"
-            ? "py-3 px-6"
+            ? "py-3 pb-2.5 pt-3.5 px-6"
             : size === "small"
             ? "py-1.5 px-4 text-sm"
             : size === "large"
-            ? "py-4 px-8 text-lg"
+            ? "py-4 pb-3.5 pt-4.5 px-8 text-lg"
             : ""
         } font-bold ${
         blank
@@ -38,7 +38,7 @@ export function ButtonBase({
           : variant === "outlined"
           ? ""
           : "hover:bg-primaryLight text-primary"
-      } ${size == "icon" ? "rounded-full" : "rounded-xl"} baseline  ${
+      } ${size == "icon" ? "rounded-full" : "rounded-xl"} baseline   ${
         props.className ?? ""
       }`}
     />
