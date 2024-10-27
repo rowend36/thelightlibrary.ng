@@ -1,5 +1,5 @@
 import { Select } from "@headlessui/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Edit, Trash } from "iconsax-react";
 import { useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
@@ -365,6 +365,7 @@ function RecommendForm({
 }
 
 function BooksTable({ books }: { books: Book[] | undefined }) {
+  const queryClient = useQueryClient();
   return (
     <DataTable
       className="w-full"
@@ -426,6 +427,27 @@ function BooksTable({ books }: { books: Book[] | undefined }) {
           name: "Updated At",
           selector(e: Book) {
             return e.updated_at?.toDateString() ?? "--";
+          },
+        },
+        {
+          name: "",
+          selector(e: Book) {
+            return (
+              <button
+                className=" text-red-700 hover:bg-red-100 active:bg-red-200  mt-4 p-2 rounded-md text-sm"
+                onClick={async () => {
+                  await fetcher("books/" + e.book_id, {
+                    method: "DELETE",
+                  });
+                  await queryClient.refetchQueries({
+                    queryKey: ["books/"],
+                  });
+                }}
+              >
+                <Trash className="inline mr-2" size={20} />
+                Delete
+              </button>
+            );
           },
         },
       ]}
