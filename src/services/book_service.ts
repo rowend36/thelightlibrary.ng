@@ -3,7 +3,7 @@ import { db, JoinColumn, Selection, Table, Type } from "../config/database";
 import reshape from "../utils/reshape";
 import { Author } from "../data/models/author";
 import { search } from "../utils/search";
-import { type Knex, QueryBuilder } from "knex";
+import { type Knex } from "knex";
 import { Featured } from "../data/models/featured";
 import { encrypt } from "../utils/encryption";
 import { User } from "../data/models/user";
@@ -13,12 +13,12 @@ function selectBooks() {
     .leftJoin(
       Type<Table>("book_authors"),
       Type<JoinColumn>("books.book_id"),
-      Type<JoinColumn>("book_authors.book_id"),
+      Type<JoinColumn>("book_authors.book_id")
     )
     .leftJoin(
       Type<Table>("authors"),
       Type<JoinColumn>("book_authors.author_id"),
-      Type<JoinColumn>("authors.author_id"),
+      Type<JoinColumn>("authors.author_id")
     )
     .select(
       Type<Selection[]>([
@@ -30,20 +30,20 @@ function selectBooks() {
         "books.created_at",
         "authors.author_id as authors[].id",
         "authors.name as authors[].name",
-      ]),
+      ])
     ) as Knex.QueryBuilder<Book, Book[]>;
 }
 
 export async function getBooks(limit: number = 100, offset: number = 0) {
-  return reshape(await selectBooks().limit(limit).offset(offset)).map(
-    prefixBucket,
-  );
+  return reshape(
+    await selectBooks().where("enabled", true).limit(limit).offset(offset)
+  ).map(prefixBucket) as Book[];
 }
 
 export async function getBookDownloadLink(
   book_id: number,
   user: User | null,
-  lifetimeMs = 24 * 60 * 60 * 1000,
+  lifetimeMs = 24 * 60 * 60 * 1000
 ) {
   const book = await getBookById(book_id, true);
   if (!book) {
@@ -55,20 +55,20 @@ export async function getBookDownloadLink(
       issueTimeMs: Date.now(),
       lifetimeMs,
       url: book.pdf_url,
-    }),
+    })
   );
   return token + "/" + encodeURIComponent(book.title);
 }
 
 export async function getBookById(
   book_id: number,
-  withPdfURL = false,
+  withPdfURL = false
 ): Promise<Book> {
   return reshape(
     await (withPdfURL ? selectBooks().select("pdf_url") : selectBooks())
       .where("books.book_id", book_id)
-      .limit(1),
-  ).map(prefixBucket as any)[0] as Book;
+      .limit(1)
+  ).map(prefixBucket)[0] as Book;
 }
 
 function selectFeatured() {
@@ -76,7 +76,7 @@ function selectFeatured() {
     .innerJoin(
       Type<Table>("featured"),
       Type<JoinColumn>("featured.book_id"),
-      Type<JoinColumn>("books.book_id"),
+      Type<JoinColumn>("books.book_id")
     )
     .select(
       Type<Selection[]>([
@@ -84,7 +84,7 @@ function selectFeatured() {
         "feature_image1 as images[a]",
         "feature_image2 as images[b]",
         "feature_image3 as images[c]",
-      ]),
+      ])
     );
 }
 
@@ -93,26 +93,26 @@ export async function getFeatured(limit: number = 100, offset: number = 0) {
     await selectFeatured()
       .where("featured.enabled", true)
       .limit(limit)
-      .offset(offset),
+      .offset(offset)
   ).map(prefixBucket);
 }
 
 export async function getFeaturedAdmin(
   limit: number = 100,
-  offset: number = 0,
+  offset: number = 0
 ) {
   return reshape(
     await selectFeatured()
       .select("featured.enabled")
       .limit(limit)
-      .offset(offset),
+      .offset(offset)
   ).map(prefixBucket);
 }
 export async function feature(
   book_id: number,
   synopsis: string,
   images: string[],
-  enabled = false,
+  enabled = false
 ) {
   await db<Featured>(Type<Table>("featured"))
     .insert({
@@ -140,8 +140,12 @@ export async function unfeature(book_id: number) {
 
 export async function getBooksAdmin(limit: number = 100, offset: number = 0) {
   return reshape(
-    await selectBooks().select("pdf_url").limit(limit).offset(offset),
-  ).map(prefixBucket as any);
+    await selectBooks()
+      .select("pdf_url")
+      .select("enabled")
+      .limit(limit)
+      .offset(offset)
+  ).map(prefixBucket);
 }
 
 export async function deleteBook(book_id: number) {
@@ -151,15 +155,14 @@ export async function deleteBook(book_id: number) {
 export async function searchBooks(
   query: string,
   limit: number = 100,
-  offset: number = 0,
-  laxLevel = 1,
+  offset: number = 0
 ) {
   return (
     await search<Book>(query, "books.tsv", selectBooks(), offset, limit)
   ).map(prefixBucket);
 }
 
-const prefixBucket = (e: Book) => {
+const prefixBucket = (e: Partial<Book>) => {
   // if (e.pdf_url)
   //   e.pdf_url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${e.pdf_url}`;
   return e;
@@ -168,17 +171,16 @@ const prefixBucket = (e: Book) => {
 export async function searchAuthors(
   query: string,
   limit: number = 100,
-  offset: number = 0,
-  laxLevel = 1,
+  offset: number = 0
 ) {
   return await search(
     query,
     "authors.tsv",
     db<Author>(Type<Table>("authors")).select(
-      Type<Selection<Author>[]>(["author_id", "name"]),
+      Type<Selection<Author>[]>(["author_id", "name"])
     ),
     offset,
-    limit,
+    limit
   );
 }
 
@@ -190,10 +192,12 @@ export async function addBook({
 }) {
   return db.transaction(async (trx) => {
     const book_id = (
-      await trx<Book>(Type<Table>("books")).insert(book).returning("book_id")
+      await trx<Book>(Type<Table>("books"))
+        .insert({ enabled: true, ...book })
+        .returning("book_id")
     )[0].book_id;
     const new_authors = authors.filter(
-      (author) => (author.author_id ?? 0) <= 0,
+      (author) => (author.author_id ?? 0) <= 0
     );
     let mapped_authors: Author[] = [];
     if (new_authors.length) {
@@ -201,9 +205,10 @@ export async function addBook({
       mapped_authors = await trx<Author>(Type<Table>("authors"))
         .insert(
           new_authors.map((e) => {
-            let { author_id, ...x } = e;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { author_id: _, ...x } = e;
             return x;
-          }),
+          })
         )
         .returning("author_id");
     }
@@ -215,7 +220,7 @@ export async function addBook({
         .map((author) => ({
           book_id,
           author_id: author.author_id,
-        })),
+        }))
     );
 
     return book_id;
@@ -239,7 +244,7 @@ export async function setRecommended({ books = [] }: { books: number[] }) {
 
 export async function getRecommended() {
   return reshape(await selectBooks().where("recommended", true)).map(
-    prefixBucket,
+    prefixBucket
   );
 }
 

@@ -1,0 +1,1 @@
+UPDATE books SET enabled = true where enabled IS NULL;

@@ -20,7 +20,7 @@ app.use(
     credentials: true,
     origin: function origin(
       origin: string,
-      callback: (_: null, __: boolean) => void,
+      callback: (_: null, __: boolean) => void
     ) {
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -28,8 +28,9 @@ app.use(
         callback(null, false);
       }
     },
-  }),
+  })
 );
+
 app.use(express.json());
 app.use("/api/auth", authRoute);
 app.use("/api/books", bookRoute);
@@ -44,7 +45,7 @@ app.use(function (
   error: Error,
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction,
+  next: express.NextFunction
 ) {
   console.error(error);
   res.send({
