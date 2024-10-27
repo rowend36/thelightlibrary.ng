@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    /* Language and Environment */
+    "target": "es2016",
+    // "moduleDetection": "auto",                        
+    "module": "NodeNext",
+    "allowJs": false,
+    "outDir": "dist",
+    "allowSyntheticDefaultImports": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "skipLibCheck": true,
+    // Not worth the effort and time even if possible
+    // "baseUrl": "./",
+    // "paths": {
+    //   "@/*": [
+    //     "src/*"
+    //   ]
+    // },
+  },
+  "exclude": [
+    "frontend/*"
+  ]
+}

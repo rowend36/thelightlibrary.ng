@@ -1,0 +1,4 @@
+CREATE TABLE migrations (
+    name VARCHAR(255) NOT NULL,
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
