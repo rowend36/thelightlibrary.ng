@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import '../src/config/init';
 import { migrationsDir } from "./create_migration";
 import { db } from "../src/config/database";
 import { PostgresError } from "pg-error-enum";
