@@ -29,18 +29,18 @@ export default function LoginPage() {
         params.get("redirect_url") ?? (user.role === "admin" ? "/admin" : "/"),
         {
           replace: true,
-        }
+        },
       );
     }
   }, [navigate, user, params]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<any>();
-  console.log({ error, user });
+  console.log({ error, user, password });
   return (
     <>
       <Navbar />
-      <div className="max-w-md mx-auto py-16 pt-32">
+      <div className="container max-w-md mx-auto py-16 pt-32">
         <div className="flex justify-center pointer-events-none">
           <AppLogo />
         </div>
@@ -69,9 +69,10 @@ export default function LoginPage() {
           <InputBase
             name="email"
             type="email"
+            label="Email"
             error={
               error?.errors?.find(
-                (e: ZodIssue) => e.path?.join(".") === "email"
+                (e: ZodIssue) => e.path?.join(".") === "email",
               )?.message
             }
             onChange={(e) => {
@@ -81,10 +82,11 @@ export default function LoginPage() {
           <InputBase
             name="password"
             type="password"
+            label="Password"
             className="mt-8"
             error={
               error?.errors?.find(
-                (e: ZodIssue) => e.path?.join(".") === "password"
+                (e: ZodIssue) => e.path?.join(".") === "password",
               )?.message
             }
             onChange={(e) => {

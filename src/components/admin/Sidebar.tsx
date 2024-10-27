@@ -2,9 +2,14 @@
 
 import { useLocation } from "react-router-dom";
 import Link from "../base/Link";
+import { useEffect } from "react";
 
 export default function Sidebar() {
   const route = useLocation().pathname;
+  useEffect(() => {
+    const sideBar = document.querySelector("#menu-toggle");
+    if (sideBar) sideBar.checked = false;
+  }, [route]);
   return (
     <>
       <div className="border-t mb-1" />

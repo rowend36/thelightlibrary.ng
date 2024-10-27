@@ -73,8 +73,8 @@ const InputBase: React.FC<InputBaseProps> = ({
             error
               ? "input-error border-red-500"
               : !props.disabled
-              ? "hover:border-primaryLight focus:border-primaryLight"
-              : ""
+                ? "hover:border-primaryLight focus:border-primaryLight"
+                : ""
           } ${startIcon ? "pl-12" : ""} ${endIcon ? "pr-12" : ""} ${
             props.disabled
               ? "bg-gray-200 text-gray-500"

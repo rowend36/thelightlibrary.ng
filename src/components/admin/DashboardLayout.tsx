@@ -32,6 +32,10 @@ export default function DashboardLayout({
       <input type={"checkbox"} id={"menu-toggle"} className="hidden peer" />
       <label
         htmlFor="menu-toggle"
+        className="inset-0 bg-black/50 fixed z-10 invisible peer-checked:visible"
+      />
+      <label
+        htmlFor="menu-toggle"
         className="py-3 px-3 md:hidden fixed top-1 z-30 cursor-pointer peer-checked:translate-x-48 transition-transform peer-checked:invisible"
       >
         <i className="text-lg p-1 text-text bx-menu bx" />
