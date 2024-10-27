@@ -15,16 +15,7 @@ type CartEvents = {
 const listenerMap = new WeakMap();
 export class CartManager extends EventEmitter<CartEvents> implements Cart {
   async checkout() {
-    const { data: purchase }: { data: Purchase } = await fetcher(
-      "cart/checkout",
-      {
-        data: {
-          cart: this.books.map((e) => e.book_id),
-        },
-      }
-    );
     await this.asyncEmit("checkout");
-    return purchase;
   }
   books: Book[] = [];
   synced: boolean = false;
@@ -42,7 +33,11 @@ export class CartManager extends EventEmitter<CartEvents> implements Cart {
     const _listener =
       listenerMap.get(listener) ||
       async function _listener(ctx: Promise<void>[]) {
-        ctx.push(Promise.resolve(listener()).then(() => void 0));
+        ctx.push(
+          Promise.all(ctx)
+            .then(listener)
+            .then(() => void 0)
+        );
       };
     if (process.env.NODE_ENV === "development") {
       _listener.listener = listener.toString();
@@ -68,8 +63,7 @@ export class CartManager extends EventEmitter<CartEvents> implements Cart {
   }
   async addToCart(book: Book) {
     await this._syncPromise;
-    if (!this.books.some((e) => e.book_id !== book.book_id))
-      this.books = this.books.concat(book);
+    if (!this.has(book)) this.books = this.books.concat(book);
     await this.asyncEmit("change");
   }
   async removeFromCart(book: Book) {

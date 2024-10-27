@@ -1,7 +1,7 @@
 import { User } from "../../data/models/user";
 
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppLogo } from "../AppLogo";
 
 import Link from "../base/Link";
@@ -15,12 +15,16 @@ import Modal from "../Modal";
 import CartModal from "./CartModal";
 
 const Navbar = ({ user }: { user?: User }) => {
-  console.log({ user });
   const [toggleMenu, setToggleMenu] = useState(false);
   const isScrolled = useScrollTop(null, false, (scroll) => scroll > 56);
   const cart = useCart();
   const [showCart, setShowCart] = useState(false);
   const route = useLocation().pathname;
+  useEffect(() => {
+    const hide = () => setShowCart(false);
+    cart.on("checkout", hide);
+    return () => void cart.off("checkout", hide);
+  }, [cart]);
   const links = (
     <>
       {/* <Link href="/upload">Upload</Link>

@@ -8,7 +8,7 @@ import { ArrowRight, ShoppingCart } from "iconsax-react";
 
 export default function CartModal() {
   const cart = useCart();
-  const navigate = useNavigate();
+
   return (
     <div className="z-40">
       <div className="absolute w-auto sm:left-8 sm:right-8 left-0 right-0">
@@ -16,9 +16,7 @@ export default function CartModal() {
           disabled={cart.books.length === 0}
           className="block mx-auto shadow-lg mb-4"
           onClick={async () => {
-            const purchase = await cart.checkout();
-
-            navigate("/checkout/?reference=" + purchase.reference);
+            await cart.checkout();
           }}
         >
           Proceed to Checkout
@@ -33,9 +31,11 @@ export default function CartModal() {
           <span>Nothing here.</span>
         </div>
       ) : (
-        cart.books.map((e) => {
-          return <BookItem book={e} key={e.book_id} horizontal />;
-        })
+        <div className="space-y-4">
+          {cart.books.map((e) => {
+            return <BookItem book={e} key={e.book_id} horizontal />;
+          })}
+        </div>
       )}
     </div>
   );

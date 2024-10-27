@@ -16,7 +16,9 @@ export default function BookItem({
     <div
       className={
         " bg-white overflow-hidden rounded-lg shadow-lg border-gray-100 hover:border-primaryLight active:border-primary border " +
-        (horizontal ? "flex flex-row flex-wrap justify-center" : "")
+        (horizontal
+          ? "flex flex-row flex-wrap justify-center"
+          : "flex flex-col")
       }
     >
       <div
@@ -26,16 +28,16 @@ export default function BookItem({
         }
       >
         <img
-          className=" self-stretch w-auto aspect-[3/4] object-cover rounded-lg shadow-lg min-h-32"
+          className=" self-stretch w-auto aspect-[3/4] object-cover rounded-lg shadow-lg h-40"
           src={book.book_cover_url}
           width={320}
           height={480}
           alt="book"
         />
       </div>
-      <div className="pb-8 px-2 pt-4 flex-grow">
-        <div className="py-2 flex flex-grow flex-col items-start justify-end w-full p-2 md:pl-4 basis-24">
-          <h3 className="font-bold text-gray-800  text-xl h-12 overflow-hidden overflow-clip line-clamp-2">
+      <div className="pb-2 px-2 pt-4 flex-grow basis-48 flex flex-col">
+        <div className="py-2 flex flex-grow flex-col items-start justify-start w-full p-2 md:pl-4 basis-24">
+          <h3 className="font-bold text-gray-800  text-lg h-12 overflow-hidden overflow-clip line-clamp-2">
             {book.title}
           </h3>
           <div className="flex justify-between w-full flex-wrap gap-y-8">
@@ -60,7 +62,7 @@ export default function BookItem({
           <ButtonBase
             className={
               "w-full text-center block mt-2" +
-              (cart?.has(book) ? " text-secondary bg-transparent" : "")
+              (cart?.has(book) ? " !text-secondary bg-transparent" : "")
             }
             onClick={() =>
               cart.has(book) ? cart.removeFromCart(book) : cart.addToCart(book)

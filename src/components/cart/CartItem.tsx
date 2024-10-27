@@ -14,7 +14,7 @@ export default function CartItem({
 }) {
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex items-center mb-4">
         <img
           className="h-32 sm:h-48 w-auto aspect-[3/4] object-cover rounded-lg shadow-lg block bg-gradient-radial from-gray-300 to-gray-200"
           src={book.book_cover_url}

@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 
 export const baseURL = import.meta.env.DEV
   ? "http://localhost:8088/api"
-  : "https://thelightlibrary.vercel.app/api";
+  : "https://thelightlibrary-backend.vercel.app/api";
 
 export class APIError extends Error {
   cause: unknown;

@@ -10,7 +10,6 @@ import { useCart } from "../data/services/cart_manager";
 
 export default function CartPage() {
   const cart = useCart();
-  const navigate = useNavigate();
 
   return (
     <>
@@ -25,9 +24,7 @@ export default function CartPage() {
         <ButtonBase
           className="text-xl w-96 max-w-full pulse"
           onClick={async () => {
-            const purchase = await cart.checkout();
-
-            navigate("/checkout/?reference=" + purchase.reference);
+            await cart.checkout();
           }}
         >
           Checkout

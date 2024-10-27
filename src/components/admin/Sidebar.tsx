@@ -47,7 +47,7 @@ export default function Sidebar() {
       <Link
         href="/admin/purchases"
         className={`w-full mb-2 py-2  text-text font-normal  ${
-          route.startsWith("/admin/users")
+          route.startsWith("/admin/purchases")
             ? "bg-primary hover:bg-primaryHover hover:text-white text-white"
             : ""
         }`}
@@ -57,7 +57,7 @@ export default function Sidebar() {
       <Link
         href="/admin/reviews"
         className={`w-full mb-2 py-2  text-text font-normal  ${
-          route.startsWith("/admin/users")
+          route.startsWith("/admin/reviews")
             ? "bg-primary hover:bg-primaryHover hover:text-white text-white"
             : ""
         }`}
@@ -67,7 +67,7 @@ export default function Sidebar() {
       <Link
         href="/admin/blog"
         className={`w-full mb-2 py-2  text-text font-normal  ${
-          route.startsWith("/admin/users")
+          route.startsWith("/admin/blog")
             ? "bg-primary hover:bg-primaryHover hover:text-white text-white"
             : ""
         }`}
@@ -78,7 +78,7 @@ export default function Sidebar() {
       <Link
         href="/admin/site"
         className={`w-full mb-2 py-2  text-text font-normal  ${
-          route.startsWith("/admin/users")
+          route.startsWith("/admin/site")
             ? "bg-primary hover:bg-primaryHover hover:text-white text-white"
             : ""
         }`}

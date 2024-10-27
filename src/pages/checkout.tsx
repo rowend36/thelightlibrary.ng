@@ -130,7 +130,7 @@ export default function CheckoutPage() {
                 </>
               )}
               <ButtonBase
-                className="bg-green-600 w-full mt-8"
+                className="!bg-green-600 w-full mt-8"
                 disabled={!email}
                 onClick={async () => {
                   const { paymentURL } = await fetcher(
