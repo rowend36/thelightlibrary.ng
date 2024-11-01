@@ -14,16 +14,16 @@ imageRoute.post(
 
         request: req,
         onBeforeGenerateToken: async (
-          pathname,
+          pathname
           /* clientPayload */
         ) => {
           return {
             //TODO - run cleanup
-            allowedContentTypes: [
-              "image/*",
-              "application/pdf",
-              "application/epub+zip",
-            ],
+            // allowedContentTypes: [
+            //   "image/*",
+            //   "application/pdf",
+            //   "application/epub+zip",
+            // ],
             tokenPayload: JSON.stringify({
               // optional, sent to your server on upload completion
               // you could pass a user id from auth, or a value from clientPayload
@@ -31,10 +31,6 @@ imageRoute.post(
           };
         },
         onUploadCompleted: async ({ blob, tokenPayload }) => {
-          // Get notified of client upload completion
-          // ⚠️ This will not work on `localhost` websites,
-          // Use ngrok or similar to get the full upload flow
-
           console.log("blob upload completed", blob, tokenPayload);
 
           try {
@@ -51,5 +47,5 @@ imageRoute.post(
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  },
+  }
 );

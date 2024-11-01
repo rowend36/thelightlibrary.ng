@@ -25,7 +25,7 @@ export const submitBookSchema = z.object({
         name: z.string().min(3),
         author_id: z.coerce.number(),
         biography: z.string().optional().default(""),
-      }),
+      })
     )
     .min(1),
 

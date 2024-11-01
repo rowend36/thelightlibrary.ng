@@ -1,18 +1,8 @@
-import { map } from "zod";
-import {
-  db,
-  Type,
-  Table,
-  JoinColumn,
-  Selection,
-  Column,
-} from "../config/database";
-import { Book } from "../data/models/book";
-import { User } from "../data/models/user";
-import { Cart } from "../data/models/cart";
-import reshape from "../utils/reshape";
-import { Purchase } from "../data/models/purchase";
 import { Knex } from "knex";
+import { db, JoinColumn, Selection, Table, Type } from "../config/database";
+import { Cart } from "../data/models/cart";
+import { User } from "../data/models/user";
+import reshape from "../utils/reshape";
 
 type CartRequest = number[];
 export const GuestUser = {
@@ -57,7 +47,7 @@ export async function setCart(user: RequestUser, request: CartRequest) {
             request
               .filter((f) => !valid_ids.some((e) => e.book_id === f))
               .join(", ") +
-            ".",
+            "."
         );
       }
     }
@@ -73,11 +63,11 @@ export async function setCart(user: RequestUser, request: CartRequest) {
 export async function getCart(
   user: RequestUser,
   cart_id?: number,
-  trx?: Knex.Transaction,
+  trx?: Knex.Transaction
 ): Promise<Required<Cart>> {
   let query = (trx ?? db)<Cart>(Type<Table>("carts")).where(
     "user_id",
-    user.user_id,
+    user.user_id
   );
   if (cart_id) {
     query = query.where(Type<JoinColumn>("carts.cart_id"), cart_id);
@@ -90,22 +80,22 @@ export async function getCart(
       .leftJoin(
         Type<Table>("cart_book"),
         Type<JoinColumn>("carts.cart_id"),
-        Type<JoinColumn>("cart_book.cart_id"),
+        Type<JoinColumn>("cart_book.cart_id")
       )
       .leftJoin(
         Type<Table>("books"),
         Type<JoinColumn>("cart_book.book_id"),
-        Type<JoinColumn>("books.book_id"),
+        Type<JoinColumn>("books.book_id")
       )
       .leftJoin(
         Type<Table>("book_authors"),
         Type<JoinColumn>("books.book_id"),
-        Type<JoinColumn>("book_authors.book_id"),
+        Type<JoinColumn>("book_authors.book_id")
       )
       .leftJoin(
         Type<Table>("authors"),
         Type<JoinColumn>("book_authors.author_id"),
-        Type<JoinColumn>("authors.author_id"),
+        Type<JoinColumn>("authors.author_id")
       )
       .select(
         Type<Selection[]>([
@@ -119,8 +109,8 @@ export async function getCart(
           "books.created_at as books[].created_at",
           "authors.name as books[].authors[].name",
           "authors.author_id as books[].authors[].id",
-        ]),
-      ),
+        ])
+      )
   );
 
   return (

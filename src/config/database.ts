@@ -1,13 +1,16 @@
+import knex from "knex";
 import { Author } from "../data/models/author";
 import { Book } from "../data/models/book";
 import { Cart } from "../data/models/cart";
-import { Category } from "../data/models/category";
-import { Purchase } from "../data/models/purchase";
-import { Review } from "../data/models/review";
-import { User } from "../data/models/user";
-import { Recommendation } from "../data/models/recommend";
-import knex from "knex";
 import { Featured } from "../data/models/featured";
+import { Post } from "../data/models/post";
+import { Purchase } from "../data/models/purchase";
+import { Recommendation } from "../data/models/recommend";
+import { Review } from "../data/models/review";
+import { SiteInfo } from "../data/models/site";
+import { Tag } from "../data/models/tag";
+import { User } from "../data/models/user";
+import { SiteReview } from "../data/models/site_review";
 
 export const db = knex({
   client: "pg",
@@ -28,7 +31,7 @@ export const db = knex({
   },
 });
 
-async function cleanup(e: any) {
+async function cleanup(e: string) {
   console.log("Received " + e + ". Cleaning up...");
   await db.destroy();
   console.log("Cleanup complete.");
@@ -39,7 +42,6 @@ process.on("SIGTERM", cleanup);
 
 type metadata = {
   authors: Author;
-  categories: Category;
   books: Book;
   book_authors: {
     book_id: number;
@@ -56,6 +58,15 @@ type metadata = {
     cart_id: number;
     book_price: number;
   };
+  site_info: SiteInfo;
+  posts: Post;
+  comments: Comment;
+  tags: Tag;
+  post_tags: {
+    post_id: number;
+    tag_id: number;
+  };
+  site_reviews: SiteReview;
   featured: Featured;
   recommended: Recommendation;
   users: User;
@@ -68,10 +79,11 @@ export function Type<T>(e: T) {
 
 // Represents table names (keys of 'metadata')
 export type Table = keyof metadata;
+export type TableType<T extends Table> = metadata[T];
 
 // Represents columns for a given table
 export type Column<T extends Table = Table> = {
-  [key in T]: Exclude<keyof metadata[key], symbol>;
+  [key in T]: Exclude<keyof metadata[key], symbol | number>;
 }[T];
 
 // Join columns in 'Table.Column' format or just 'Column'
@@ -82,8 +94,10 @@ export type JoinColumn<T extends Table = Table> =
     }[T];
 
 // Property access notation like 'prop[]' or 'prop.subProp'
-type PropNotation<T> =
-  `${keyof T & string}${`[${"a" | "b" | "c"}]` | "[]" | "."}${string}`;
+type PropNotation<T> = `${keyof T & string}${
+  | `[${"a" | "b" | "c"}]`
+  | "[]"
+  | "."}${string}`;
 
 // Filters tables whose metadata matches type 'T'
 type Values<T> = {

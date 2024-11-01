@@ -7,7 +7,7 @@
     "module": "NodeNext",
     "allowJs": false,
     "outDir": "dist",
-    "allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

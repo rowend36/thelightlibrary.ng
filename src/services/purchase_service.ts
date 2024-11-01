@@ -11,61 +11,81 @@ export class EmptyCartException extends Error {
     super("Cannot checkout empty cart");
   }
 }
+
+export function selectPurchase() {
+  return db<Purchase>(Type<Table>("purchase"))
+    .leftJoin(
+      Type<Table>("carts"),
+      Type<JoinColumn>("carts.cart_id"),
+      Type<JoinColumn>("purchase.cart_id")
+    )
+
+    .leftJoin(
+      Type<Table>("cart_book"),
+      Type<JoinColumn>("carts.cart_id"),
+      Type<JoinColumn>("cart_book.cart_id")
+    )
+    .leftJoin(
+      Type<Table>("books"),
+      Type<JoinColumn>("cart_book.book_id"),
+      Type<JoinColumn>("books.book_id")
+    )
+    .leftJoin(
+      Type<Table>("book_authors"),
+      Type<JoinColumn>("books.book_id"),
+      Type<JoinColumn>("book_authors.book_id")
+    )
+    .leftJoin(
+      Type<Table>("authors"),
+      Type<JoinColumn>("book_authors.author_id"),
+      Type<JoinColumn>("authors.author_id")
+    )
+    .select(
+      Type<Selection[]>([
+        "purchase.cart_id",
+        "purchase.purchase_price",
+        "purchase.created_at",
+        "purchase.completed_at",
+        "purchase.status",
+        "purchase.reference",
+        "carts.cart_id as cart.cart_id",
+        "carts.user_id as cart.user_id",
+        "carts.checked_out as cart.checked_out",
+        "books.book_id as cart.books[].book_id",
+        "price as cart.books[].price",
+        "title as cart.books[].title",
+        "book_cover_url as cart.books[].book_cover_url",
+        "description as cart.books[].description",
+        "books.created_at as cart.books[].created_at",
+        "authors.name as cart.books[].authors[].name",
+        "authors.author_id as cart.books[].authors[].id",
+      ])
+    );
+}
+
 export async function getPurchaseByReference(
-  reference: string,
+  reference: string
 ): Promise<Purchase> {
   const purchase = reshape(
-    await db<Purchase>(Type<Table>("purchase"))
-      .where("reference", reference)
-      .leftJoin(
-        Type<Table>("carts"),
-        Type<JoinColumn>("carts.cart_id"),
-        Type<JoinColumn>("purchase.cart_id"),
-      )
-
-      .leftJoin(
-        Type<Table>("cart_book"),
-        Type<JoinColumn>("carts.cart_id"),
-        Type<JoinColumn>("cart_book.cart_id"),
-      )
-      .leftJoin(
-        Type<Table>("books"),
-        Type<JoinColumn>("cart_book.book_id"),
-        Type<JoinColumn>("books.book_id"),
-      )
-      .leftJoin(
-        Type<Table>("book_authors"),
-        Type<JoinColumn>("books.book_id"),
-        Type<JoinColumn>("book_authors.book_id"),
-      )
-      .leftJoin(
-        Type<Table>("authors"),
-        Type<JoinColumn>("book_authors.author_id"),
-        Type<JoinColumn>("authors.author_id"),
-      )
-      .select(
-        Type<Selection[]>([
-          "purchase.cart_id",
-          "purchase.purchase_price",
-          "purchase.created_at",
-          "purchase.completed_at",
-          "purchase.status",
-          "purchase.reference",
-          "carts.cart_id as cart.cart_id",
-          "carts.checked_out as cart.checked_out",
-          "books.book_id as cart.books[].book_id",
-          "price as cart.books[].price",
-          "title as cart.books[].title",
-          "book_cover_url as cart.books[].book_cover_url",
-          "description as cart.books[].description",
-          "books.created_at as cart.books[].created_at",
-          "authors.name as cart.books[].authors[].name",
-          "authors.author_id as cart.books[].authors[].id",
-        ]),
-      ),
+    await selectPurchase().where("reference", reference)
   )[0];
-
   return purchase;
+}
+
+export async function getPurchasesForUserId(
+  user_id: number,
+  limit = 100,
+  offset = 0
+) {
+  return reshape(
+    await selectPurchase()
+      .where("carts.user_id", user_id)
+      .limit(limit)
+      .offset(offset)
+  );
+}
+export async function getPurchasesAdmin(limit = 100, offset = 0) {
+  return reshape(await selectPurchase().limit(limit).offset(offset));
 }
 
 export async function checkout(user: Pick<User, "user_id">, cart_id: number) {
@@ -79,7 +99,7 @@ export async function checkout(user: Pick<User, "user_id">, cart_id: number) {
     }
     const totalPrice = cart.books!.reduce(
       (a, e) => a + parseFloat(e.price ?? "0"),
-      0,
+      0
     );
     trx
       .insert(
@@ -87,7 +107,7 @@ export async function checkout(user: Pick<User, "user_id">, cart_id: number) {
           cart_id: cart_id,
           book_id: e.book_id,
           book_price: e.price,
-        })),
+        }))
       )
       .onConflict(["cart_id", "book_id"])
       .merge(["book_price"]);

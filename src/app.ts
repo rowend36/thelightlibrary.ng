@@ -8,6 +8,11 @@ import cartRoute from "./routes/cart_route";
 import { imageRoute } from "./routes/image_route";
 import userRoute from "./routes/user_route";
 import downloadRoute from "./routes/download_route";
+import postsRoute from "./routes/post_route";
+import siteRoute from "./routes/site_route";
+import purchaseRoute from "./routes/purchase_route";
+import { reviewRouter } from "./routes/review_route";
+import { siteReviewRouter } from "./routes/site_review_route";
 
 const app = express();
 app.use(helmet());
@@ -32,12 +37,21 @@ app.use(
 );
 
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log(req.method, req.url);
+  next();
+});
 app.use("/api/auth", authRoute);
 app.use("/api/books", bookRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/image", imageRoute);
 app.use("/api/users", userRoute);
+app.use("/api/reviews", reviewRouter);
+app.use("/api/site-reviews", siteReviewRouter);
+app.use("/api/purchases", purchaseRoute);
 app.use("/api/download", downloadRoute);
+app.use("/api/posts", postsRoute);
+app.use("/api/site", siteRoute);
 app.get("/api", (req, res) => {
   res.send("Server is cool.");
 });

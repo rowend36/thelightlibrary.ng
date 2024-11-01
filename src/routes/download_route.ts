@@ -1,7 +1,6 @@
 import { Router } from "express";
-import { authMiddleware } from "../middleware/authMiddleware";
-import { decrypt } from "../utils/encryption";
 import { Readable } from "node:stream";
+import { decrypt } from "../utils/encryption";
 
 const downloadRoute = Router();
 

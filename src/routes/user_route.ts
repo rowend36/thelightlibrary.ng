@@ -21,9 +21,11 @@ userRoute.get("/", authMiddleware, async (req, res) => {
   });
 });
 userRoute.get("/:id", authMiddleware, async (req, res) => {
+  const id = parseInt(req.params.id);
+  if (Number.isNaN(id)) return res.status(400);
   res.send({
     message: "Success",
-    data: await getUserById(parseInt(req.params.id)),
+    data: await getUserById(id),
   });
 });
 
@@ -53,7 +55,7 @@ userRoute.post(
     res.send({
       message: "Success",
     });
-  },
+  }
 );
 
 export default userRoute;

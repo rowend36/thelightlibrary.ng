@@ -1,8 +1,11 @@
+import { Router } from "express";
+import { z } from "zod";
+import { authMiddleware } from "../middleware/authMiddleware";
+import { validateRequest } from "../middleware/validate_request";
 import {
   addBook,
   deleteBook,
   feature,
-  getBookById,
   getBookDownloadLink,
   getBooks,
   getBooksAdmin,
@@ -14,18 +17,14 @@ import {
   setRecommended,
   unfeature,
 } from "../services/book_service";
-import { NextFunction, Router } from "express";
-import { z, ZodError } from "zod";
+import { getUser } from "../utils/get_user";
+import s from "../utils/safe_async_handler";
 import {
   featureSchema,
   recommendBooksSchema,
   searchAuthorSchema,
   submitBookSchema,
 } from "./schemas/books_schemas";
-import { authMiddleware } from "../middleware/authMiddleware";
-import { validateRequest } from "../middleware/validate_request";
-import { getUser } from "../utils/get_user";
-import s from "../utils/safe_async_handler";
 
 const bookRoute = Router();
 
@@ -38,6 +37,7 @@ bookRoute.get(
     } else res.send(await getBooks(50, page * 50));
   })
 );
+
 bookRoute.get(
   "/admin",
   authMiddleware,
@@ -46,24 +46,28 @@ bookRoute.get(
     res.send(await getBooksAdmin(50, page * 50));
   })
 );
+
 bookRoute.get(
   "/recommended",
   s(async (req, res) => {
     res.send(await getRecommended());
   })
 );
+
 bookRoute.get(
   "/featured",
   s(async (req, res) => {
     res.send(await getFeatured());
   })
 );
+
 bookRoute.get(
   "/featured/admin",
   s(async (req, res) => {
     res.send(await getFeaturedAdmin());
   })
 );
+
 bookRoute.post(
   "/featured",
   validateRequest(featureSchema),

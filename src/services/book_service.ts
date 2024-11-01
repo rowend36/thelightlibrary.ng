@@ -149,7 +149,12 @@ export async function getBooksAdmin(limit: number = 100, offset: number = 0) {
 }
 
 export async function deleteBook(book_id: number) {
-  return db<Book>(Type<Table>("books")).where("book_id", book_id).delete();
+  try {
+    // return db<Book>(Type<Table>("books")).where("book_id", book_id).delete();
+  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    console.log((e as any).constructor);
+  }
 }
 
 export async function searchBooks(
@@ -163,8 +168,6 @@ export async function searchBooks(
 }
 
 const prefixBucket = (e: Partial<Book>) => {
-  // if (e.pdf_url)
-  //   e.pdf_url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${e.pdf_url}`;
   return e;
 };
 

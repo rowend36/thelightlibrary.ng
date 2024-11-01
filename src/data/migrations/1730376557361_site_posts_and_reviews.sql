@@ -1,0 +1,10 @@
+CREATE TABLE site_info (
+    profile VARCHAR(16) PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    background_img VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    title2 VARCHAR(255) NOT NULL,
+    description2 VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

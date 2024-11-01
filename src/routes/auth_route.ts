@@ -1,13 +1,12 @@
 "use server";
-import { getSession } from "../utils/session";
-import { createUser, getUserByEmail } from "../services/user_service";
 import * as bcrypt from "bcryptjs";
+import { createUser, getUserByEmail } from "../services/user_service";
+import { getSession } from "../utils/session";
 
-import { loginSchema, signUpSchema } from "./schemas/auth_schemas";
-import validateForm from "../utils/validate_form";
-import { request, Router } from "express";
+import { Router } from "express";
 import { z, ZodError } from "zod";
 import { validateRequest } from "../middleware/validate_request";
+import { loginSchema, signUpSchema } from "./schemas/auth_schemas";
 const authRoute = Router();
 
 authRoute.post("/login", async (req, res) => {
@@ -81,7 +80,10 @@ authRoute.post("/signup", validateRequest(signUpSchema), async (req, res) => {
       ],
     });
   }
-  const password_hash = await bcrypt.hash(data.password, 10);
+  const password_hash = await bcrypt.hash(
+    data.password,
+    10 /** number of rounds of hashing */
+  );
   const user_id = await createUser({
     email: data.email,
     password_hash,

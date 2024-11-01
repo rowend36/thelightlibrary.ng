@@ -1,0 +1,4 @@
+ALTER TABLE site_info ADD COLUMN landing_img VARCHAR(255) NOT NULL;
+ALTER TABLE site_info ADD COLUMN about_website TEXT NOT NULL;
+ALTER TABLE site_info ADD COLUMN about_author TEXT NOT NULL;
+ALTER TABLE site_info ADD COLUMN author_img VARCHAR(255) NOT NULL;

@@ -4,13 +4,13 @@ import { getSession } from "../utils/session";
 export async function authMiddleware(
   request: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   const session = await getSession(request, res);
   const currentUser = session.user;
-  const url = new URL(
-    `http://${process.env.HOST ?? "localhost"}${request.url}`,
-  );
+  // const url = new URL(
+  //   `http://${process.env.HOST ?? "localhost"}${request.url}`,
+  // );
 
   if (!currentUser) {
     return res.status(401).json({

@@ -14,10 +14,12 @@ export function validateRequest<T extends ZodSchema>(schema: T): Handler {
         });
       else throw e;
     }
+
     return next();
   };
 }
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     export interface Request {
       validated_data?: unknown;
