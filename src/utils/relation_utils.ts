@@ -9,23 +9,25 @@ export async function createRelations<
   from,
   to,
   trx,
-  id,
+  item_id,
   tags,
-  join_table = (from.slice(0, -1) + "_" + to.slice(0, -1)) as JoinTable,
-  post_id = (from.slice(0, -1) + "_id") as Column<From>,
-  tag_id = (to.slice(0, -1) + "_id") as Column<To>,
+  update,
+  through = (from.slice(0, -1) + "_" + to) as JoinTable,
+  from_pk = (from.slice(0, -1) + "_id") as Column<From>,
+  to_pk = (to.slice(0, -1) + "_id") as Column<To>,
 }: {
   trx: Knex.Transaction;
-  id: Column<From>;
+  item_id: number;
   tags: Partial<TableType<To>>[];
   from: From;
   to: To;
-  join_table?: JoinTable;
-  post_id?: Column<From>;
-  tag_id?: Column<To>;
+  update?: boolean;
+  through?: JoinTable;
+  from_pk?: Column<From>;
+  to_pk?: Column<To>;
 }) {
   if (tags.length) {
-    const new_tags = tags.filter((tag) => ((tag[tag_id] as number) ?? 0) <= 0);
+    const new_tags = tags.filter((tag) => ((tag[to_pk] as number) ?? 0) <= 0);
     let mapped_tags: TableType<To>[] = [];
     if (new_tags.length) {
       console.log("Uploading tags....");
@@ -33,23 +35,37 @@ export async function createRelations<
         .insert(
           new_tags.map((e) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { [tag_id]: _, ...x } = e;
+            const { [to_pk]: _, ...x } = e;
             return x;
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           }) as any
         )
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .returning(tag_id)) as any;
+        .returning(to_pk)) as any;
     }
     console.log("Updating post tags....");
-    await trx(join_table).insert(
+    if (update) {
+      await trx(through)
+        .where(from_pk, item_id)
+        .whereNotIn(
+          // @ts-expect-error - GO figure
+          to_pk,
+          tags.map((tag) => tag[to_pk])
+        )
+        .delete();
+    }
+    let m = trx(through).insert(
       tags
-        .filter((e) => ((e[tag_id] as number) ?? 0) > 0)
+        .filter((e) => ((e[to_pk] as number) ?? 0) > 0)
         .concat(mapped_tags)
         .map((tag) => ({
-          [post_id]: id,
-          tag_id: tag[tag_id],
+          [from_pk]: item_id,
+          [to_pk]: tag[to_pk],
         }))
     );
+    if (update) {
+      m = m.onConflict().ignore();
+    }
+    await m;
   }
 }

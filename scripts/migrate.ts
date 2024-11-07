@@ -1,14 +1,15 @@
 import * as fs from "fs";
 import * as path from "path";
-import '../src/config/init';
+import "../src/config/init";
 import { migrationsDir } from "./create_migration";
-import { db } from "../src/config/database";
+import { getDatabase } from "../src/config/database";
 import { PostgresError } from "pg-error-enum";
 
 class Migration {
   name!: string;
 }
 import("index-to-position").then(({ default: indexToPosition }) => {
+  const db = getDatabase();
   fs.readdir(migrationsDir, async (err: any, migrations: string[]) => {
     migrations.sort(
       (e, f) => parseInt(e.split("_")[0]) - parseInt(f.split("_")[0]),
@@ -17,7 +18,7 @@ import("index-to-position").then(({ default: indexToPosition }) => {
     let applied: string[] = [];
     try {
       const results = await db<Migration>("migrations").select("*");
-      applied = results.map((r) => r.name);
+      applied = results.map((r: Migration) => r.name);
     } catch (e: any) {
       if (e.code === PostgresError.UNDEFINED_TABLE) {
         console.log("First run");

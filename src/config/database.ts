@@ -1,4 +1,4 @@
-import knex from "knex";
+import knex, { Knex } from "knex";
 import { Author } from "../data/models/author";
 import { Book } from "../data/models/book";
 import { Cart } from "../data/models/cart";
@@ -12,28 +12,40 @@ import { Tag } from "../data/models/tag";
 import { User } from "../data/models/user";
 import { SiteReview } from "../data/models/site_review";
 
-export const db = knex({
-  client: "pg",
-  connection: {
-    host: process.env.PGHOST,
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-    database: process.env.PGDATABASE,
-    ssl: process.env.PGCA
-      ? {
-          ca: process.env.PGCA,
-        }
-      : Boolean(process.env.PGSECURE),
-  },
-  pool: {
-    min: 0,
-    max: 1,
-  },
-});
+let _database: Knex<any, unknown[]> | null = null;
+export const getDatabase = () =>
+  _database ||
+  (_database = knex({
+    client: "pg",
+    connection: {
+      host: process.env.PGHOST,
+      user: process.env.PGUSER,
+      password: process.env.PGPASSWORD,
+      database: process.env.PGDATABASE,
+      ssl: process.env.PGCA
+        ? {
+            ca: process.env.PGCA,
+          }
+        : Boolean(process.env.PGSECURE),
+    },
+    pool: {
+      min: 0,
+      max: 1,
+    },
+  }));
+
+export const destroyDatabase = async () => {
+  try {
+    await _database?.destroy();
+  } catch (e) {
+    console.error(e);
+  }
+  _database = null;
+};
 
 async function cleanup(e: string) {
   console.log("Received " + e + ". Cleaning up...");
-  await db.destroy();
+  await destroyDatabase();
   console.log("Cleanup complete.");
   process.exit(0);
 }

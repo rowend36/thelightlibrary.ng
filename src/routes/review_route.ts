@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { reviewService } from "../services/review_service";
+import { reviewRepository } from "../services/review_service";
 import {
   listAll,
   getOne,
@@ -12,12 +12,12 @@ import { authMiddleware } from "../middleware/authMiddleware";
 
 export const reviewRouter = Router();
 
-reviewRouter.get("/", listAll(reviewService));
-reviewRouter.get("/:id", getOne(reviewService));
+reviewRouter.get("/", listAll(reviewRepository));
+reviewRouter.get("/:id", getOne(reviewRepository));
 reviewRouter.post(
   "/",
   authMiddleware,
   supplyUser,
-  createOne(reviewService, createReviewSchema)
+  createOne(reviewRepository, createReviewSchema)
 );
-reviewRouter.delete("/:id", authMiddleware, deleteOne(reviewService));
+reviewRouter.delete("/:id", authMiddleware, deleteOne(reviewRepository));

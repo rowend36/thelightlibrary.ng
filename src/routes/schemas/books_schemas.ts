@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const searchAuthorSchema = z.object({
-  author_name: z.string(),
+  name: z.string(),
 });
 
 export const submitBookSchema = z.object({
@@ -28,9 +28,11 @@ export const submitBookSchema = z.object({
       })
     )
     .min(1),
-
+  enabled: z.boolean().optional().default(true),
   pdf_url: z.string(),
 });
+
+export const updateBookSchema = submitBookSchema.partial();
 
 export const recommendBooksSchema = z.object({
   books: z.array(z.number()),

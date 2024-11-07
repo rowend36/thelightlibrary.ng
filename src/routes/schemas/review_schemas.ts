@@ -18,3 +18,7 @@ export const siteReviewSchema = z.object({
   guest_photo: z.string(),
   content: z.string(),
 });
+
+export const createSiteReviewSchema = siteReviewSchema.omit({
+  comment_id: true,
+});

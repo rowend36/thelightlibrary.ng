@@ -2,9 +2,9 @@ import { Decimal } from "./book";
 import { Cart } from "./cart";
 
 export enum PurchaseStatus {
-  success = 0,
-  failure = 1,
-  pending = 2,
+  success = "success",
+  failure = "failure",
+  pending = "pending",
 }
 export class Purchase {
   cart_id!: number;

@@ -1,6 +1,6 @@
-import { QueryBuilder } from "knex";
-import { Column, db, Table, TableType } from "../config/database";
-import reshape from "../utils/reshape";
+import { Knex, QueryBuilder } from "knex";
+import { Column, getDatabase, Table, TableType } from "../config/database";
+import reshape from "./reshape";
 
 type Join<T extends Table = Table> = {
   table: T;
@@ -11,49 +11,52 @@ type Join<T extends Table = Table> = {
   prefix?: string;
 };
 
-function addJoin(query: QueryBuilder, from: Join, to: Join) {
+function addJoin(query: Knex.QueryBuilder, from: Join, to: Join) {
   let columns: string[];
   if (to.through) {
     query = query.leftJoin(
       to.through,
+      from.table + "." + from.pk,
       to.through + "." + from.pk,
-      from.table + "." + from.pk
     );
     const [q, c] = addJoin(
       query,
       {
         table: to.through,
         pk: to.pk,
+        prefix: from.prefix,
         columns: [],
       },
-      { ...to, through: undefined, prefix: (to.prefix || to.table) + "[]." }
+      { ...to, through: undefined, prefix: (to.prefix || to.table) + "[]" },
     );
     query = q;
     columns = c;
   } else {
     query = query.leftJoin(
       to.table,
+      from.table + "." + to.pk,
       to.table + "." + to.pk,
-      from.table + "." + to.pk
     );
+    const prefix =
+      (from.prefix ? from.prefix + "." : "") +
+      (to.prefix ? to.prefix + "." : "");
     columns = to.columns.map(
-      (e) => to.table + "." + e + (to.prefix ? " as " + to.prefix + e : "")
+      (e) => to.table + "." + e + (prefix ? " as " + prefix + e : ""),
     );
-  }
-  if (to.joins) {
-    for (const i of to.joins) {
-      const [q, c] = addJoin(query, to, i);
-      if (to.prefix) {
-        columns = columns.concat(c.map((e) => " as " + to.prefix + e));
-      } else columns = columns.concat(c);
-      query = q;
+
+    if (to.joins) {
+      for (const i of to.joins) {
+        const [q, c] = addJoin(query, to, i);
+        columns = columns.concat(c);
+        query = q;
+      }
     }
   }
   return [query, columns] as const;
 }
-export class ModelService<
+export class ModelRepository<
   T extends Table,
-  PKType extends number | string = number
+  PKType extends number | string = number,
 > implements Join<T>
 {
   table: T;
@@ -64,7 +67,7 @@ export class ModelService<
   constructor(
     table: T,
     pk: Column<T> = table.replace(/s?$/, "_id") as Column<T>,
-    columns: Column<T>[] = [pk]
+    columns: Column<T>[] = [pk],
   ) {
     this.table = table;
     this.pk = pk;
@@ -82,8 +85,9 @@ export class ModelService<
     this.joins.push(join as any);
     return this;
   }
-  select() {
-    let query = db(this.table);
+  filter(
+    query: Knex.QueryBuilder,
+  ): Knex.QueryBuilder<TableType<T>, TableType<T>[]> {
     let columns = this.columns.map((e) => this.table + "." + e);
     for (const i of this.joins) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -94,26 +98,28 @@ export class ModelService<
     }
     return query.select(columns);
   }
-  selectPublic() {
-    return this.select();
+  select(
+    txn: Knex.Transaction = getDatabase() as never,
+  ): Knex.QueryBuilder<TableType<T>, TableType<T>[]> {
+    return this.filter(txn(this.table));
   }
   async list({ offset = 0, limit = 100 }) {
     console.log(
-      this.selectPublic()
+      this.select()
         //   .where("status", "published")
         .limit(parseInt(limit.toString()) || 0)
         .offset(parseInt(offset.toString()) || 0)
-        .toSQL()
+        .toSQL(),
     );
     return reshape(
-      await this.selectPublic()
+      await this.select()
         //   .where("status", "published")
         .limit(parseInt(limit.toString()) || 0)
-        .offset(parseInt(offset.toString()) || 0)
+        .offset(parseInt(offset.toString()) || 0),
     ) as TableType<T>[];
   }
   async retrieve(id: PKType) {
-    const data = await this.selectPublic()
+    const data = await this.select()
       // .where("status", "published")
       .where(this.table + "." + this.pk, id);
     if (!data || !data.length) {
@@ -123,20 +129,19 @@ export class ModelService<
     }
   }
   async create(data: Partial<TableType<T>>) {
+    const db = getDatabase();
     const id = (await db(this.table).insert(data).returning(this.pk))[0][
       this.pk
     ];
     return id as PKType;
   }
   async update(id: PKType, data: Partial<TableType<T>>) {
-    return this.selectPublic()
+    return this.select()
       .where({ [this.pk]: id })
-      .update({
-        ...data,
-      });
+      .update(data as never);
   }
   async delete(id: PKType) {
-    return this.selectPublic()
+    return this.select()
       .where({ [this.pk]: id })
       .delete();
   }

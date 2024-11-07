@@ -12,18 +12,18 @@ import {
   getFeatured,
   getFeaturedAdmin,
   getRecommended,
-  searchAuthors,
   searchBooks,
   setRecommended,
   unfeature,
+  updateBook,
 } from "../services/book_service";
 import { getUser } from "../utils/get_user";
 import s from "../utils/safe_async_handler";
 import {
   featureSchema,
   recommendBooksSchema,
-  searchAuthorSchema,
   submitBookSchema,
+  updateBookSchema,
 } from "./schemas/books_schemas";
 
 const bookRoute = Router();
@@ -58,6 +58,19 @@ bookRoute.get(
   "/featured",
   s(async (req, res) => {
     res.send(await getFeatured());
+  })
+);
+
+bookRoute.patch(
+  "/:id",
+  authMiddleware,
+  validateRequest(updateBookSchema),
+  s(async (req, res) => {
+    await updateBook(
+      parseInt(req.params.id),
+      req.validated_data as z.infer<typeof updateBookSchema>
+    );
+    res.send({ success: "true" });
   })
 );
 
@@ -131,13 +144,4 @@ bookRoute.post(
   })
 );
 
-bookRoute.get(
-  "/authors/search",
-  s(async (req, res) => {
-    const data = searchAuthorSchema.parse({
-      author_name: req.query.query,
-    });
-    return await searchAuthors(data.author_name).then((e) => res.json(e));
-  })
-);
 export default bookRoute;

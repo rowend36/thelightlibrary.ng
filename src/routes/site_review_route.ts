@@ -1,23 +1,34 @@
 import { Router } from "express";
-import { siteReviewService } from "../services/review_service";
+import { authMiddleware } from "../middleware/authMiddleware";
+import { siteReviewRepository } from "../services/review_service";
 import {
-  listAll,
-  getOne,
   createOne,
   deleteOne,
+  getOne,
+  listAll,
   supplyUser,
+  updateOne,
 } from "../utils/route_handlers";
-import { createReviewSchema } from "./schemas/review_schemas";
-import { authMiddleware } from "../middleware/authMiddleware";
+import { createSiteReviewSchema } from "./schemas/review_schemas";
 
 export const siteReviewRouter = Router();
 
-siteReviewRouter.get("/", listAll(siteReviewService));
-siteReviewRouter.get("/:id", getOne(siteReviewService));
+siteReviewRouter.get("/", listAll(siteReviewRepository));
+siteReviewRouter.get("/:id", getOne(siteReviewRepository));
 siteReviewRouter.post(
   "/",
   authMiddleware,
   supplyUser,
-  createOne(siteReviewService, createReviewSchema)
+  createOne(siteReviewRepository, createSiteReviewSchema)
 );
-siteReviewRouter.delete("/:id", authMiddleware, deleteOne(siteReviewService));
+siteReviewRouter.patch(
+  "/:id",
+  authMiddleware,
+  supplyUser,
+  updateOne(siteReviewRepository, createSiteReviewSchema.partial())
+);
+siteReviewRouter.delete(
+  "/:id",
+  authMiddleware,
+  deleteOne(siteReviewRepository)
+);

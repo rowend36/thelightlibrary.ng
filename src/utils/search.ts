@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { db } from "../config/database";
+import { getDatabase } from "../config/database";
 import reshape from "./reshape";
 
 export async function search<T extends object>(
@@ -10,6 +10,7 @@ export async function search<T extends object>(
   limit: number,
   searchSpace = 100, // Initial search space, defaults to 100 rows
 ) {
+  const db = getDatabase();
   // Preprocess the query by removing unwanted characters and preparing it for to_tsquery
   const preprocessed =
     "(" +

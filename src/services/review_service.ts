@@ -1,6 +1,6 @@
-import { ModelService } from "../utils/model_service";
+import { ModelRepository } from "../utils/model_repository";
 
-export const reviewService = new ModelService("reviews", "review_id", [
+export const reviewRepository = new ModelRepository("reviews", "review_id", [
   "review_id",
   "book_id",
   "comment",
@@ -19,8 +19,15 @@ export const reviewService = new ModelService("reviews", "review_id", [
     pk: "book_id",
   });
 
-export const siteReviewService = new ModelService(
+export const siteReviewRepository = new ModelRepository(
   "site_reviews",
   "comment_id",
-  ["comment_id", "content", "guest_name", "guest_photo", "guest_title"]
+  [
+    "comment_id",
+    "content",
+    "guest_name",
+    "guest_photo",
+    "guest_title",
+    "created_at",
+  ]
 );

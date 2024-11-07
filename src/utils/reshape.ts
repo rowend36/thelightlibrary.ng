@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function reshape<T extends { [key: string]: any }, V = T>(
   input: T[],
   className?: new () => V,

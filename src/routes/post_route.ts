@@ -11,6 +11,7 @@ import {
   publishPost,
   selectAdminPostById,
   selectPostById,
+  updatePost,
 } from "../services/post_service";
 import { getUser } from "../utils/get_user";
 import { simpleGetOne, simpleUpdateOne } from "../utils/route_handlers";
@@ -50,10 +51,15 @@ postsRoute.post(
 postsRoute.patch(
   "/:id",
   authMiddleware,
-  simpleUpdateOne(
-    (req) => selectPostById(parseInt(req.params.id)),
-    updatePostSchema
-  )
+  validateRequest(updatePostSchema),
+  s(async (req, res) => {
+    const data = req.validated_data as z.infer<typeof updatePostSchema>;
+    await updatePost(parseInt(req.params.id), {
+      ...data,
+      updated_at: new Date(),
+    });
+    res.send({ success: true });
+  })
 );
 
 postsRoute.get(

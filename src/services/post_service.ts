@@ -1,12 +1,11 @@
-import { Knex } from "knex";
-import { db, JoinColumn, Selection, Table, Type } from "../config/database";
+import knex, { Knex } from "knex";
+import { getDatabase, Table, Type } from "../config/database";
 import { Post } from "../data/models/post";
 import { Tag } from "../data/models/tag";
-import { ModelService } from "../utils/model_service";
+import { ModelRepository } from "../utils/model_repository";
 import { createRelations } from "../utils/relation_utils";
-import reshape from "../utils/reshape";
 
-class PostService extends ModelService<"posts"> {
+class PostRepository extends ModelRepository<"posts"> {
   constructor() {
     super("posts", "post_id", [
       "post_id",
@@ -28,63 +27,67 @@ class PostService extends ModelService<"posts"> {
   }
 }
 
-class PublicPostService extends PostService {
-  override select() {
-    return super.select().where("published", true);
+class PublicPostRepository extends PostRepository {
+  override filter(db: Knex.QueryBuilder) {
+    return super.filter(db).where("status", "published");
   }
 }
 
-const postService = new PostService();
-const publicPostService = new PublicPostService();
+const posts = new PostRepository();
+const publicPosts = new PublicPostRepository();
 
 export async function getPosts(limit = 100, offset = 0) {
-  return publicPostService.list({ offset, limit });
+  return publicPosts.list({ offset, limit });
 }
 
 export async function publishPost(post_id: number) {
-  return postService.update(post_id, {
+  return posts.update(post_id, {
     status: "published",
     published_at: new Date(),
   });
 }
 
 export function selectPostById(post_id: number) {
-  return publicPostService.retrieve(post_id);
+  return publicPosts.select().where("posts.post_id", post_id);
 }
 
 export async function getAdminPosts(limit = 100, offset = 0) {
-  return postService.list({ limit, offset });
+  return posts.list({ limit, offset });
 }
 
 export function selectAdminPostById(post_id: number) {
-  return postService.retrieve(post_id);
+  return posts.select().where("posts.post_id", post_id);
 }
 
 export async function createPost({
   tags,
   ...post
-}:
-  | Omit<
-      Post,
-      | "post_id"
-      | "created_at"
-      | "updated_at"
-      | "published_at"
-      | "status"
-      | "tags"
-    > &
-      Partial<Pick<Post, "status">> & {
-        tags?: (Partial<Tag> & Pick<Tag, "name">)[];
-      }) {
+}: Omit<
+  Post,
+  "post_id" | "created_at" | "updated_at" | "published_at" | "status" | "tags"
+> &
+  Partial<Pick<Post, "status">> & {
+    tags?: (Partial<Tag> & Pick<Tag, "name">)[];
+  }) {
+  const db = getDatabase();
   return db.transaction(async (trx) => {
     const post_id = (
-      await trx<Post>(Type<Table>("posts")).insert(post).returning("post_id")
+      await trx<Post>(Type<Table>("posts"))
+        .insert({
+          ...(post.status === "published"
+            ? {
+                published_at: new Date(),
+              }
+            : null),
+          ...post,
+        })
+        .returning("post_id")
     )[0].post_id;
     if (tags) {
-      createRelations({
+      await createRelations({
         from: "posts",
         to: "tags",
-        id: "post_id",
+        item_id: post_id,
         tags,
         trx,
       });
@@ -94,21 +97,33 @@ export async function createPost({
 }
 
 export async function updatePost(post_id: number, updates: Partial<Post>) {
-  return postService.update(post_id, {
+  console.log(updates);
+  const db = getDatabase();
+  await posts.update(post_id, {
+    ...(updates.status === "published"
+      ? {
+          published_at: db.raw("COALESCE(published_at, ?)", [
+            new Date(),
+          ]) as never,
+        }
+      : null),
     ...updates,
     updated_at: new Date(),
   });
 }
 
 export async function deletePost(post_id: number) {
+  const db = getDatabase();
   return await db("posts").where({ post_id }).delete();
 }
 
 export async function getTags() {
+  const db = getDatabase();
   return await db("tags").select("tag_id", "name", "slug");
 }
 
 export async function createTag(name: string, slug: string) {
+  const db = getDatabase();
   const data = await db<Tag>("tags")
     .insert({
       name,

@@ -4,7 +4,7 @@ import s from "./safe_async_handler";
 import { Knex } from "knex";
 import { z, ZodSchema } from "zod";
 import { validateRequest } from "../middleware/validate_request";
-import { ModelService } from "./model_service";
+import { ModelRepository } from "./model_repository";
 import { getUser } from "./get_user";
 
 export const supplyUser = s(async function (req, res, next) {
@@ -48,7 +48,7 @@ export function simpleUpdateOne<T extends ZodSchema>(
   });
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function listAll(service: ModelService<any>) {
+export function listAll(service: ModelRepository<any>) {
   return s(async (req, res) =>
     res.send(
       await service.list({
@@ -61,7 +61,7 @@ export function listAll(service: ModelService<any>) {
 
 export function getOne(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  service: ModelService<any>
+  service: ModelRepository<any>
 ) {
   return s(async function (req, res) {
     const data = await service.retrieve(parseInt(req.params.id));
@@ -77,7 +77,7 @@ export function getOne(
 
 export function createOne(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  service: ModelService<any>,
+  service: ModelRepository<any>,
   schema: ZodSchema
 ) {
   return s(async function (req, res) {
@@ -96,7 +96,7 @@ export function createOne(
 
 export function updateOne(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  service: ModelService<any>,
+  service: ModelRepository<any>,
   schema: ZodSchema
 ) {
   return s(async function (req, res) {
@@ -112,7 +112,7 @@ export function updateOne(
 
 export function deleteOne(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  service: ModelService<any>
+  service: ModelRepository<any>
 ) {
   return s(async function (req, res) {
     await service.delete(parseInt(req.params.id));

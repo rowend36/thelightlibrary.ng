@@ -1,4 +1,4 @@
-import { db, Table, Type } from "../config/database";
+import { getDatabase, Table, Type } from "../config/database";
 import { SiteInfo } from "../data/models/site";
 import reshape from "../utils/reshape";
 import sanitizeHtml from "sanitize-html";
@@ -14,25 +14,30 @@ export function clean(title: string | undefined) {
 }
 
 export async function updateSite(
-  data: Partial<SiteInfo> & Pick<SiteInfo, "profile">
+  data: Partial<SiteInfo> & Pick<SiteInfo, "profile">,
 ) {
-  await db<SiteInfo>(Type<Table>("site_info"))
-    .insert({ ...data, title: clean(data.title) })
+  const db = getDatabase();
+  const m = db<SiteInfo>(Type<Table>("site_info"))
+    .insert({
+      background_img: "",
+      landing_img: "",
+      author_img: "",
+      about_website: "",
+      about_author: "",
+      description: "",
+      title2: "",
+      description2: "",
+      ...data,
+      title: clean(data.title),
+    })
     .onConflict("profile")
-    .merge([
-      "title",
-      "description",
-      "title2",
-      "description2",
-      "background_img",
-      "landing_img",
-      "about_author",
-      "about_website",
-      "author_img",
-    ]);
+    .merge({ ...data, title: clean(data.title) });
+  console.log(m.toSQL(), data);
+  await m;
 }
 
 export async function getSiteInfo(profile = "default") {
+  const db = getDatabase();
   const data =
     (await db<SiteInfo>(Type<Table>("site_info"))
       .where("profile", profile)

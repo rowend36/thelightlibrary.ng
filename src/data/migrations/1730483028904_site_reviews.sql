@@ -4,5 +4,5 @@ CREATE TABLE site_reviews (
     guest_title VARCHAR(255),
     guest_photo VARCHAR(255),
     content TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  
 );

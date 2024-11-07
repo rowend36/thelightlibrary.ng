@@ -1,8 +1,7 @@
-import express = require("express");
+import express from "express";
 import bookRoute from "./routes/book_route";
 import authRoute from "./routes/auth_route";
 import helmet from "helmet";
-// @ts-expect-error
 import cors from "cors";
 import cartRoute from "./routes/cart_route";
 import { imageRoute } from "./routes/image_route";
@@ -13,6 +12,7 @@ import siteRoute from "./routes/site_route";
 import purchaseRoute from "./routes/purchase_route";
 import { reviewRouter } from "./routes/review_route";
 import { siteReviewRouter } from "./routes/site_review_route";
+import authorRoute from "./routes/author_route";
 
 const app = express();
 app.use(helmet());
@@ -24,16 +24,17 @@ app.use(
   cors({
     credentials: true,
     origin: function origin(
-      origin: string,
-      callback: (_: null, __: boolean) => void
+      origin: string | undefined,
+      callback: (_: null, __: boolean) => void,
     ) {
-      if (allowedOrigins.includes(origin)) {
+      if (true || allowedOrigins.includes(origin!)) {
         callback(null, true);
       } else {
+        //@ts-ignore
         callback(null, false);
       }
     },
-  })
+  }),
 );
 
 app.use(express.json());
@@ -42,6 +43,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use("/api/auth", authRoute);
+app.use("/api/authors", authorRoute);
 app.use("/api/books", bookRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/image", imageRoute);
@@ -59,10 +61,12 @@ app.use(function (
   error: Error,
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  next: express.NextFunction,
 ) {
+  console.log("Best");
   console.error(error);
-  res.send({
+  res.status(500).json({
     error: "Internal Server Error",
     detail: error.message,
   });

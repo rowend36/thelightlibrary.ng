@@ -1,7 +1,8 @@
 import { NextFunction, Router } from "express";
-import { authMiddleware } from "../middleware/authMiddleware";
+// import { authMiddleware } from "../middleware/authMiddleware";
 
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { getDatabase } from "../config/database";
 export const imageRoute = Router();
 
 imageRoute.post(
@@ -9,12 +10,13 @@ imageRoute.post(
   //   authMiddleware,
   async (req, res, next: NextFunction) => {
     try {
+      const db = getDatabase();
       const jsonResponse = await handleUpload({
         body: req.body,
 
         request: req,
         onBeforeGenerateToken: async (
-          pathname
+          pathname,
           /* clientPayload */
         ) => {
           return {
@@ -47,5 +49,5 @@ imageRoute.post(
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
-  }
+  },
 );
