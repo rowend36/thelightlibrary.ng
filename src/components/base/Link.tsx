@@ -15,7 +15,7 @@ export default function Link(
       {...props}
       className={` text-primary py-2 -my-1 px-2 rounded-lg ${props.className} ${
         props.disabled
-          ? "cursor-default opacity-75"
+          ? "cursor-default opacity-75 text-gray-500"
           : "hover:text-primaryLight font-bold"
       }`}
     />

@@ -1,7 +1,7 @@
 import { ActionResponse } from "../data/actions/ActionResponse";
 
 export default function errorDescription(
-  state: ActionResponse,
+  state: ActionResponse | null | undefined,
   ...path: (string | number)[]
 ) {
   if (state?.errors) {

@@ -3,7 +3,7 @@ import { fetcher, uploadAndGetURL } from "./queryFn";
 
 export async function submitBookFn(formData: FormData) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let body: any = {};
+  const body: any = {};
   for (const entry of formData.entries()) {
     if (entry[0] === "pdf") {
       if (entry[1] == null) continue;

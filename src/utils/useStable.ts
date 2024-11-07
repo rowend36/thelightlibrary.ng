@@ -3,7 +3,7 @@ import { useRef } from "react";
  * Wraps a function that changes every render with a stable reference that does not trigger updates in dependency arrays
  * @returns {Function} stable_callback
  */
-export default function useStable<T extends [], V>(
+export default function useStable<T extends unknown[], V>(
   func: ((...args: T) => V) | null,
   wrapper = <T>(e: T) => e
 ) {

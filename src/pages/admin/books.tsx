@@ -1,9 +1,14 @@
-import { Select } from "@headlessui/react";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxOption,
+  ComboboxOptions,
+  Select,
+} from "@headlessui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Edit, Trash } from "iconsax-react";
-import { useEffect, useMemo, useState } from "react";
+import { Edit, Minus, Trash } from "iconsax-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
-import UploadBooksForm from "../../components/admin/books/UploadBooksForm";
 import { DashboardProvider } from "../../components/admin/DashboardContext";
 import { ButtonBase } from "../../components/base/ButtonBase";
 import InputBase from "../../components/base/InputBase";
@@ -14,6 +19,11 @@ import { mapResponseToBooks } from "../../data/actions/mappers";
 import { authQueryFn, fetcher } from "../../data/actions/queryFn";
 import { Book } from "../../data/models/book";
 import { formatNaira } from "../../utils/formatNumber";
+import { DataForm } from "../../components/admin/DataView";
+import { Author } from "../../data/models/author";
+import errorDescription from "../../utils/error_description";
+import { ActionResponse } from "../../data/actions/ActionResponse";
+import { Primitive } from "react-data-table-component/dist/DataTable/types";
 
 export default function AdminBooksPage(): JSX.Element {
   const {
@@ -44,25 +54,95 @@ export default function AdminBooksPage(): JSX.Element {
     select: mapResponseToBooks,
   });
 
-  const [showAddBookForm, setShowAddBookForm] = useState<boolean>(false);
+  const [showAddBookForm, setShowAddBookForm] = useState<Book | null | true>(
+    null
+  );
   const [showFeaturedBookForm, setShowFeaturedBookForm] = // -> Prevent prettier from botching this formatting
     useState<boolean | number>(false);
+
   return (
     <>
-      <DashboardProvider value={books}>
+      <DashboardProvider>
         <ButtonBase
           className="mb-8 block mx-auto"
           onClick={() => setShowAddBookForm(true)}
         >
           Upload New Book
         </ButtonBase>
-        <Modal open={showAddBookForm} onClose={() => setShowAddBookForm(false)}>
-          <UploadBooksForm
-            onSubmit={() => {
-              setShowAddBookForm(false);
-              refetch();
-            }}
+        <Modal
+          open={!!showAddBookForm}
+          onClose={() => setShowAddBookForm(null)}
+          title={
+            showAddBookForm && showAddBookForm !== true
+              ? "Edit Book"
+              : "Upload New Book"
+          }
+        >
+          <DataForm<Book>
+            // title="Upload New Book"
             key={showAddBookForm ? 1 : 0}
+            initial={
+              showAddBookForm && showAddBookForm !== true
+                ? showAddBookForm
+                : null
+            }
+            specs={{
+              book_cover_url: {
+                formType: "image",
+                label: "Cover Image",
+              },
+              title: {
+                formType: "text",
+                label: "Book Title",
+              },
+              description: {
+                formType: "text",
+                label: "Book Description",
+              },
+              price: {
+                formType: "number",
+                label: "Price",
+              },
+              enabled: {
+                formType: "boolean",
+                label: "Enabled",
+              },
+              published_date: {
+                formType: "month",
+                label: "Publication Date",
+              },
+              authors: {
+                formType(data: Author[], err, initial) {
+                  return <AuthorForm state={err!} initial={initial} />;
+                },
+                tableType(e) {
+                  return e.map((e) => e.name).join(", ");
+                },
+                label: "Authors",
+              },
+              pdf_url: {
+                formType: "pdf",
+                label: "File",
+              },
+            }}
+            // state={state}
+            onSubmit={async (data) => {
+              if ("price" in data) data.price = data.price?.toString() as never;
+              if (showAddBookForm && showAddBookForm !== true) {
+                await fetcher("books/" + showAddBookForm.book_id, {
+                  method: "PATCH",
+                  data,
+                });
+              } else {
+                await fetcher("books", {
+                  method: "POST",
+                  data,
+                });
+              }
+              await refetch();
+              setShowAddBookForm(null);
+            }}
+            onCancel={() => setShowAddBookForm(null)}
           />
         </Modal>
 
@@ -70,7 +150,10 @@ export default function AdminBooksPage(): JSX.Element {
           <div className="shadow-sm bg-white p-4 rounded-md basis-56 flex-grow">
             <h2 className="font-bold text-gray-600 mb-2">All Books</h2>
 
-            <BooksTable books={books} />
+            <BooksTable
+              books={books}
+              editBook={(book) => setShowAddBookForm(book)}
+            />
           </div>
         </div>
         <div className="flex flex-wrap gap-x-4 mb-8 gap-y-4 ">
@@ -92,6 +175,21 @@ export default function AdminBooksPage(): JSX.Element {
                     <p className="text-gray-900 text-sm mt-4">
                       {e.price === undefined ? e.price : formatNaira(e.price)}
                     </p>
+                    <ButtonBase
+                      color="#ff0000"
+                      onClick={async () => {
+                        await fetcher("books/recommend", {
+                          data: {
+                            books: recommended
+                              ?.map((e) => e.book_id)
+                              .filter((f) => f !== e.book_id),
+                          },
+                        });
+                        await refetchRecommended();
+                      }}
+                    >
+                      <Trash size={20} color="#ffffff" />
+                    </ButtonBase>
                   </div>
                 </li>
               ))}
@@ -129,7 +227,7 @@ export default function AdminBooksPage(): JSX.Element {
                   >
                     <img
                       src={book.book_cover_url}
-                      className="rounded-lg h-36 w-24 object-contain bg-gray-200"
+                      className="rounded-lg h-36 w-24 object-contain bg-gray-200 max-h-56"
                     ></img>
                     <div className="flex-grow">
                       <h5 className="mt-2">{book.title}</h5>
@@ -205,6 +303,208 @@ export default function AdminBooksPage(): JSX.Element {
   );
 }
 
+function AuthorForm({
+  state,
+  initial,
+}: {
+  state?: ActionResponse;
+  initial?: Author[];
+}) {
+  const [authors, setAuthors] = useState<Author[]>([]);
+
+  const maxId = useRef(-1);
+  const addAuthor = useCallback(() => {
+    setAuthors([
+      ...authors,
+      { author_id: maxId.current--, name: "", biography: "" },
+    ]);
+  }, [authors]);
+
+  const [query, setQuery] = useState("");
+  const [suggestedAuthors, setSuggestedAuthors] = useState<Author[]>([]);
+  const fetchController = useRef({
+    blockUntil: 0, // block future requests
+    active: query,
+    tag: 0,
+    lastTag: 0,
+  });
+  useEffect(
+    function resend() {
+      if (!query) return;
+      if (query.length < 3) return;
+      const tag = ++fetchController.current.tag;
+      if (
+        fetchController.current.blockUntil > Date.now() &&
+        query.startsWith(fetchController.current.active)
+      ) {
+        fetchController.current.active = query;
+        return;
+      }
+      fetchController.current.active = query;
+
+      fetchController.current.blockUntil = Date.now() + 5000;
+      fetcher("authors/search?name=" + encodeURIComponent(query)).then(
+        (authors) => {
+          if (fetchController.current.lastTag <= tag) {
+            setSuggestedAuthors(authors);
+            fetchController.current.lastTag = tag;
+          }
+        }
+      );
+    },
+    [query]
+  );
+  // Add at least one author
+
+  useEffect(() => {
+    setAuthors((e) => [
+      ...(initial?.length
+        ? initial
+        : [{ author_id: maxId.current--, name: "", biography: "" }]),
+    ]);
+  }, [initial]);
+
+  return (
+    <>
+      <h3 className="font-bold mt-8">Authors</h3>
+
+      {authors.length > 0 ? (
+        authors.map((author, i) => (
+          <div key={i}>
+            <input
+              type="hidden"
+              name={"authors[" + i + "].author_id"}
+              value={author.author_id}
+            />
+            <div className="flex justify-between items-center mb-1">
+              <h4 className="text-sm font-bold text-gray-400">Author #{i}</h4>
+              {authors.length > 1 ? (
+                <ButtonBase
+                  variant="transparent"
+                  onClick={() => {
+                    setAuthors(
+                      authors.filter((e) => e.author_id !== author.author_id)
+                    );
+                  }}
+                  size="icon"
+                  blank
+                  className="hover:bg-red-50"
+                >
+                  <Minus className="text-red-500" />
+                </ButtonBase>
+              ) : null}
+            </div>
+
+            <Combobox
+              name={"authors[" + i + "].name"}
+              value={author.name}
+              onChange={(value) => {
+                if (!value || typeof value === "string") {
+                  setAuthors(
+                    authors.map((e) =>
+                      e.author_id === author.author_id
+                        ? { ...e, name: value ?? "" }
+                        : e
+                    )
+                  );
+                } else {
+                  setAuthors(
+                    authors.map((e) =>
+                      e.author_id === author.author_id ? value : e
+                    )
+                  );
+                }
+              }}
+              onClose={() => setQuery("")}
+            >
+              <InputBase
+                as={ComboboxInput}
+                value={author.name}
+                error={errorDescription(state, "authors", i, "name")}
+                type="text"
+                autoComplete="off"
+                placeholder="Author Name"
+                className="mb-4"
+                onChange={(event) => {
+                  setAuthors(
+                    authors.map((el) =>
+                      el.author_id === author.author_id
+                        ? {
+                            ...el,
+                            name: event.target.value,
+                            author_id:
+                              el.author_id < 0 || event.target.value === el.name
+                                ? el.author_id
+                                : maxId.current--,
+                          }
+                        : el
+                    )
+                  );
+                  setQuery(event.target.value);
+                }}
+              />
+              <ComboboxOptions
+                anchor="bottom"
+                className="border  w-56 bg-white shadow-md mt-1 z-50"
+              >
+                {suggestedAuthors.map((suggestedAuthor) => (
+                  <ComboboxOption
+                    key={suggestedAuthor.author_id}
+                    value={suggestedAuthor}
+                    className="data-[focus]:bg-blue-100 p-2"
+                  >
+                    {suggestedAuthor.name}
+                  </ComboboxOption>
+                ))}
+              </ComboboxOptions>
+            </Combobox>
+            <InputBase
+              as="textarea"
+              type="text"
+              name={"authors[" + i + "].biography"}
+              error={errorDescription(state, "authors", i, "biography")}
+              disabled={author.author_id > 0}
+              value={author.biography}
+              setValue={(value) =>
+                setAuthors(
+                  authors.map((e) =>
+                    e.author_id === author.author_id
+                      ? {
+                          ...e,
+                          biography: value,
+                          author_id:
+                            e.author_id < 0 || value === e.name
+                              ? e.author_id
+                              : maxId.current--,
+                        }
+                      : e
+                  )
+                )
+              }
+              placeholder={author.author_id > 0 ? "-" : "About Author"}
+              className="mb-4 min-h-16 max-h-32"
+            />
+          </div>
+        ))
+      ) : (
+        <div className="text-center mb-4">
+          <i className="text-lg italic text-gray-400">No authors added</i>
+        </div>
+      )}
+      <ButtonBase
+        onClick={addAuthor}
+        className="mt-4 mx-auto block"
+        size="small"
+      >
+        Add Author
+      </ButtonBase>
+      <p className="text-red-500 text-center">
+        {errorDescription(state, "authors") || null}
+      </p>
+    </>
+  );
+}
+
 function FeatureBookForm({
   books,
   book,
@@ -258,7 +558,7 @@ function FeatureBookForm({
             onChange={(e) =>
               setSelected(
                 options.find(
-                  (book) => book.book_id === parseInt(e.target.value)
+                  (book) => book?.book_id === parseInt(e.target.value)
                 )
               )
             }
@@ -364,7 +664,14 @@ function RecommendForm({
   );
 }
 
-function BooksTable({ books }: { books: Book[] | undefined }) {
+function BooksTable({
+  books,
+  editBook,
+}: {
+  books: Book[] | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editBook: (book: Book) => void;
+}) {
   const queryClient = useQueryClient();
   return (
     <DataTable
@@ -375,21 +682,34 @@ function BooksTable({ books }: { books: Book[] | undefined }) {
         {
           name: "ID",
           selector(e: Book) {
-            return e.book_id;
+            return e.enabled
+              ? e.book_id
+              : ((
+                  <span className="text-red-500">{e.book_id}</span>
+                ) as unknown as Primitive);
           },
           minWidth: "auto",
           grow: 0,
         },
         {
           name: "Title",
+
           selector(e: Book) {
-            return e.title;
+            return e.enabled
+              ? e.title
+              : ((
+                  <span className="text-red-500">{e.title}</span>
+                ) as unknown as Primitive);
           },
         },
         {
           name: "Description",
           selector(e: Book) {
-            return e.description;
+            return e.enabled
+              ? e.description
+              : ((
+                  <span className="text-red-500">{e.description}</span>
+                ) as unknown as Primitive);
           },
           maxWidth: "180px",
         },
@@ -431,22 +751,38 @@ function BooksTable({ books }: { books: Book[] | undefined }) {
         },
         {
           name: "",
+          minWidth: "200px",
+          grow: 0,
           selector(e: Book) {
             return (
-              <button
-                className=" text-red-700 hover:bg-red-100 active:bg-red-200  mt-4 p-2 rounded-md text-sm"
-                onClick={async () => {
-                  await fetcher("books/" + e.book_id, {
-                    method: "DELETE",
-                  });
-                  await queryClient.refetchQueries({
-                    queryKey: ["books/"],
-                  });
-                }}
-              >
-                <Trash className="inline mr-2" size={20} />
-                Delete
-              </button>
+              <div className="flex justify-between">
+                <button
+                  className=" text-primary hover:bg-primary/10 active:hover:bg-primary/20 mt-4 p-2 rounded-md text-sm"
+                  onClick={() => editBook(e)}
+                >
+                  <Edit className="inline mr-2" size={20} />
+                  Edit
+                </button>
+
+                <button
+                  className=" text-red-700 hover:bg-red-100 active:bg-red-200  mt-4 p-2 rounded-md text-sm"
+                  onClick={async () => {
+                    try {
+                      await fetcher("books/" + e.book_id, {
+                        method: "DELETE",
+                      });
+                      await queryClient.refetchQueries({
+                        queryKey: ["books"],
+                      });
+                    } catch (e) {
+                      alert(e?.cause?.detail);
+                    }
+                  }}
+                >
+                  <Trash className="inline mr-2" size={20} />
+                  Delete
+                </button>
+              </div>
             );
           },
         },

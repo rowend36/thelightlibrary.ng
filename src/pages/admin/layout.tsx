@@ -7,8 +7,9 @@ import { useEffect } from "react";
 import { useAuth } from "../../data/services/user_manager";
 
 export default function AdminLayout() {
+  const matches = useMatches();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const meta = (useMatches().pop()?.handle as any)?.meta;
+  const meta = (matches[matches.length - 1]?.handle as any)?.meta;
   const navigate = useNavigate();
   const auth = useAuth();
   useEffect(() => {
@@ -21,7 +22,7 @@ export default function AdminLayout() {
   return (
     <DashboardLayout
       sidebar={<Sidebar />}
-      header={<Header title={meta?.title} />}
+      header={<Header title={meta?.title} allowBack={meta?.allowBack} />}
       mainLoader={
         <div className="text-lg text-center my-16">
           <Loader />

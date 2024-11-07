@@ -30,16 +30,26 @@ const Navbar = ({ user }: { user?: User }) => {
       {/* <Link href="/upload">Upload</Link>
       <Link href="#">Product</Link> */}
       <Link
+        href="/"
+        disabled={route === "/"}
+        className={isScrolled ? "lg:text-xs" : "lg:text-white lg:text-xs"}
+      >
+        Home
+      </Link>
+      <Link
         href="/about"
         disabled={route === "/about"}
-        className={isScrolled ? "" : "lg:text-white"}
+        className={isScrolled ? "lg:text-xs" : "lg:text-white lg:text-xs"}
       >
         About Author
+      </Link>
+      <Link href="/blog" disabled={route === "/blog"} className="lg:hidden">
+        Blog
       </Link>
       <Link
         href="/books"
         disabled={route === "/books"}
-        className={isScrolled ? "" : "lg:text-white"}
+        className={isScrolled ? "lg:text-xs" : "lg:text-white lg:text-xs"}
       >
         Books
       </Link>
@@ -73,7 +83,7 @@ const Navbar = ({ user }: { user?: User }) => {
         <div className="md:hidden flex-1"></div>
         <AppLogo className={isScrolled ? "" : "invert brightness-0"} />
         {/* Menu Items */}
-        <div className="max-md:hidden flex-1 mr-32"></div>
+        <div className="max-md:hidden flex-1 mr-8"></div>
 
         <SearchBar
           className={
@@ -86,11 +96,14 @@ const Navbar = ({ user }: { user?: User }) => {
           }}
         />
         <div className="flex-1 max-lg:ml-10  "></div>
+        <div className="hidden xl:space-x-4 space-x-1 lg:flex max-lg:mr-10 lg:mr-4 max-sm:mr-2 ">
+          {links}
+        </div>
         <button
           className={
             (isScrolled ? "" : "text-white ") +
             (cart.books.length ? "" : "invisible ") +
-            "max-lg:mr-10 max-sm:mr-2 relative block"
+            "relative block"
           }
           onClick={() => setShowCart(true)}
         >
@@ -102,7 +115,6 @@ const Navbar = ({ user }: { user?: User }) => {
             className={isScrolled ? "text-primary" : "text-white "}
           />
         </button>
-        <div className="hidden xl:space-x-4 space-x-1 lg:flex">{links}</div>
       </div>
       <div className="container max-sm:hidden">
         {route === "/books" || route === "/search" ? null : (
@@ -114,6 +126,14 @@ const Navbar = ({ user }: { user?: User }) => {
         )}
       </div>
       {/* Mobile Menu */}
+      {toggleMenu ? (
+        <div
+          className="bg-black/10 fixed lg:hidden top-0  left-0 h-screen w-screen"
+          onClick={() => {
+            setToggleMenu(false);
+          }}
+        />
+      ) : null}
       <div className="lg:hidden" onClick={() => setToggleMenu(false)}>
         <div
           className={

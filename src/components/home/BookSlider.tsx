@@ -74,7 +74,7 @@ function SliderItem({ book }: { book: Book }) {
       <div className=" relative overflow-hidden py-12 flex flex-col justify-center group">
         <img
           src={book.book_cover_url}
-          className="peer object-cover mx-auto rounded-xl w-auto h-full  max-h-[70vh] max-md:max-w-none sm:max-md:w-[calc(100vw-14px)] max-md:flex-shrink-0 max-md:max-h-[50vmax]"
+          className="peer object-cover mx-auto rounded-xl w-auto h-full  max-h-[28rem] max-md:max-w-none sm:max-md:w-[calc(100vw-14px)] max-md:flex-shrink-0 max-md:max-h-[50vmax]"
           alt=""
         />
         <div className="rounded flex flex-col items-center justify-center text-justify text-white p-8 absolute inset-y-0 w-full bg-gray-800/50 opacity-0 -left-full group-active:opacity-0 group-active:-left-full  group-hover:opacity-100 group-hover:left-0 transition-[opacity,left] duration-1000  backdrop-blur-md">

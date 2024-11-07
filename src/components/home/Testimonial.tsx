@@ -3,10 +3,24 @@ import { Link } from "react-router-dom";
 import avatarAnisha from "../../assets/images/avatar-anisha.png";
 // import avatarAli from "../assets/images/avatar-ali.png";
 // import avatarRichard from "../assets/images/avatar-richard.png";
+import { useQuery } from "@tanstack/react-query";
+import { Link2, QuoteUpCircle } from "iconsax-react";
+import { mapResponseToReviewList } from "../../data/actions/mappers";
+import { queryFn } from "../../data/actions/queryFn";
+import { SiteReview } from "../../data/models/site_review";
 import { ButtonBase } from "../base/ButtonBase";
-import { Link1, Link2, QuoteUpCircle } from "iconsax-react";
+import Loader from "../Loader";
 
 const Testimonial = () => {
+  const {
+    data: reviews,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["site-reviews", "?limit=3"],
+    queryFn: queryFn,
+    select: mapResponseToReviewList,
+  });
   return (
     <section
       id="testimonials"
@@ -17,11 +31,22 @@ const Testimonial = () => {
         {/* Heading */}
         <h2 className="text-4xl font-bold text-center">Book Reviews</h2>
         {/* Testimonials Container */}
-        <div className="flex flex-col md:mt-16 md:flex-row md:-space-x-6">
-          {/* Testimonial 1 */}
-          <Card />
-          <Card center />
-          <Card />
+        <div className="flex flex-col md:mt-16 md:flex-row md:-space-x-6 justify-center">
+          {reviews?.length ? (
+            reviews.map((review, i) => {
+              return (
+                <Card
+                  review={review}
+                  center={
+                    (i === 1 && reviews.length === 3) ||
+                    (i === 0 && reviews.length === 1)
+                  }
+                />
+              );
+            })
+          ) : (
+            <Loader />
+          )}
         </div>
         {/* Button */}
         <div className="mt-8 mb-16 text-center">
@@ -36,7 +61,7 @@ const Testimonial = () => {
   );
 };
 
-const Card = function Card({ center = false }) {
+const Card = function Card({ center = false, review = null! as SiteReview }) {
   return (
     <div
       className={` ${
@@ -57,14 +82,16 @@ const Card = function Card({ center = false }) {
         />
 
         <p className={`${center ? "text-white" : "text-text"} text-sm px-8`}>
-          NYSC Abia Library is a valauable tool that has improved my academic
-          research. A big shout out to the team behind it.”
+          {review.content}”
         </p>
       </div>
 
-      <img src={avatarAnisha} className="w-16 h-16 rounded-full -mt-8 z-10" />
-      <span className="mt-2">Richard Watts</span>
-      <span className="text-sm">Senior Developer</span>
+      <img
+        src={review.guest_photo || avatarAnisha}
+        className="w-16 h-16 rounded-full -mt-8 z-10"
+      />
+      <span className="mt-2">{review.guest_name}</span>
+      <span className="text-sm">{review.guest_title}</span>
     </div>
   );
 };

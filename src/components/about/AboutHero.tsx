@@ -1,6 +1,3 @@
-import { Link } from "react-router-dom";
-import illustrationIntro from "../../assets/my_images/man-thinker.jpg";
-import { ButtonBase } from "../base/ButtonBase";
 import bookImage from "../../assets/images/library.jpg";
 const AboutHero = () => {
   return (

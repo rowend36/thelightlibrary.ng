@@ -7,8 +7,11 @@ import { useEffect } from "react";
 export default function Sidebar() {
   const route = useLocation().pathname;
   useEffect(() => {
-    const sideBar = document.querySelector("#menu-toggle");
-    if (sideBar) sideBar.checked = false;
+    if (typeof document !== "undefined") {
+      const sideBar: HTMLInputElement | null =
+        document.querySelector("#menu-toggle");
+      if (sideBar) sideBar.checked = false;
+    }
   }, [route]);
   return (
     <>
@@ -78,12 +81,23 @@ export default function Sidebar() {
       <Link
         href="/admin/site"
         className={`w-full mb-2 py-2  text-text font-normal  ${
-          route.startsWith("/admin/site")
+          route.startsWith("/admin/site") &&
+          !route.startsWith("/admin/site-reviews")
             ? "bg-primary hover:bg-primaryHover hover:text-white text-white"
             : ""
         }`}
       >
         Site Management
+      </Link>
+      <Link
+        href="/admin/site-reviews"
+        className={`w-full mb-2 py-2  text-text font-normal  ${
+          route.startsWith("/admin/site-reviews")
+            ? "bg-primary hover:bg-primaryHover hover:text-white text-white"
+            : ""
+        }`}
+      >
+        Site Reviews
       </Link>
     </>
   );

@@ -73,25 +73,26 @@ const InputBase: React.FC<InputBaseProps> = ({
             error
               ? "input-error border-red-500"
               : !props.disabled
-                ? "hover:border-primaryLight focus:border-primaryLight"
-                : ""
+              ? "hover:border-primaryLight focus:border-primaryLight"
+              : ""
           } ${startIcon ? "pl-12" : ""} ${endIcon ? "pr-12" : ""} ${
             props.disabled
               ? "bg-gray-200 text-gray-500"
               : "bg-gray-100 text-text"
           }`}
         >
-          {options && as !== "input"
-            ? options.map((e) => (
-                <option key={e} value={e}>
-                  {e}
-                </option>
-              ))
-            : undefined}
+          {props.children ??
+            (options && as !== "input"
+              ? options.map((e) => (
+                  <option key={e} value={e}>
+                    {e}
+                  </option>
+                ))
+              : undefined)}
         </Component>
         {!props.label && props.placeholder && floatingPlaceholder ? (
           <Label
-            className={`block text-xs peer-placeholder-shown:opacity-0 peer-focus:opacity-100 transition-opacity absolute -top-2 left-3 bg-white px-1 ${
+            className={`block text-xs peer-placeholder-shown:opacity-0 peer-focus:opacity-100 transition-opacity absolute -top-2 left-3 bg-[rgb(var(--background-rgb))] px-1 ${
               error
                 ? "text-red-600"
                 : "peer-hover:text-primaryLight peer-focus:text-primaryLight"
@@ -107,7 +108,7 @@ const InputBase: React.FC<InputBaseProps> = ({
         )}
       </div>
       {(props.description || (error && typeof error === "string")) && (
-        <Description className={`text-sm mt-4`} as="div">
+        <Description className={`text-sm mt-2 text-text`} as="div">
           {error ? (
             <p className={error ? "text-red-600" : ""}>{error}</p>
           ) : undefined}

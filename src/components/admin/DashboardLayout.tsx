@@ -47,7 +47,7 @@ export default function DashboardLayout({
         <CloseCircle className="w-7 h-7 p-1 text-text" />
       </label>
       <div className="flex flex-shrink-0 flex-col w-64 px-4 xl:px-8 max-md:fixed bg-white border-gray-300 border-r max-md:shadow-lg max-md:hidden max-md:peer-checked:flex max-md:z-10 max-md:h-full max-h-screen overflow-auto">
-        <AppLogo className="w-24" />
+        <AppLogo className="h-16 max-w-full" />
         {/* <Suspense fallback={sidebarLoader}> */}
         {sidebar}
         {/* </Suspense> */}
@@ -58,8 +58,13 @@ export default function DashboardLayout({
           {header}
           {/* </Suspense> */}
         </div>
-        <div className="flex-grow h-0 py-8 px-4 xl:px-8 max-md:mt-14  bg-gray-100 container ">
-          <div className="overflow-auto max-h-full -mr-4 pr-4">
+        <div className="flex-grow h-0 py-8 px-4 xl:px-8 max-md:mt-14  bg-gray-100 container overflow-auto ">
+          <div
+            className="max-h-full -mr-4 pr-4"
+            style={{
+              "--background-rgb": "243 244 246",
+            }}
+          >
             {/* <Suspense fallback={mainLoader}> */}
             {main}
             {/* </Suspense> */}

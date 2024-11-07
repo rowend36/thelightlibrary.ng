@@ -37,6 +37,13 @@ body {
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+.blue {
+  color: #0000ff;
+}
+.orange {
+  color: #e8871e;
+}
+
 @layer components {
   .container {
     @apply px-4 sm:px-6 md:px-6 lg:px-12 xl:px-24 mx-auto;

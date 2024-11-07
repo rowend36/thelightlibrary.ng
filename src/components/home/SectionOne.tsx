@@ -88,7 +88,7 @@ function ListItem({ book }: { book: Book }) {
     <div className="flex-col flex md:items-start items-center">
       <img
         src={book_cover_url}
-        className="object-cover rounded-md w-56 h-auto self-end"
+        className="object-cover rounded-md w-56 h-auto self-end max-h-72  "
         alt=""
       />
       <h3 className="mb-4 text-lg font-bold md:block mt-8">{title}</h3>

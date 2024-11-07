@@ -1,10 +1,7 @@
-import { useNavigate } from "react-router-dom";
-import { fetcher } from "../../data/actions/queryFn";
+import { ArrowRight, ShoppingCart } from "iconsax-react";
 import { useCart } from "../../data/services/cart_manager";
 import { ButtonBase } from "../base/ButtonBase";
 import BookItem from "../books/BookItem";
-import { Purchase } from "../../data/models/purchase";
-import { ArrowRight, ShoppingCart } from "iconsax-react";
 
 export default function CartModal() {
   const cart = useCart();
@@ -16,7 +13,11 @@ export default function CartModal() {
           disabled={cart.books.length === 0}
           className="block mx-auto shadow-lg mb-4"
           onClick={async () => {
-            await cart.checkout();
+            try {
+              await cart.checkout();
+            } catch (e) {
+              alert(e?.cause?.detail);
+            }
           }}
         >
           Proceed to Checkout
