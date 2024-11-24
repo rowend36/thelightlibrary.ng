@@ -10,4 +10,5 @@ export class SiteInfo {
   about_website!: string;
   about_author!: string;
   author_img!: string;
+  updated_at!: Date;
 }

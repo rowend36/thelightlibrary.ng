@@ -29,5 +29,15 @@ export const siteReviewRepository = new ModelRepository(
     "guest_photo",
     "guest_title",
     "created_at",
+    "updated_at",
   ]
 );
+
+export const getAllReviewFiles = function () {
+  return [
+    siteReviewRepository
+      .select()
+      .clearSelect()
+      .select("guest_photo", "site_reviews.updated_at"),
+  ];
+};

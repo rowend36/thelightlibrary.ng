@@ -5,4 +5,5 @@ export class SiteReview {
   guest_photo!: string;
   content!: string;
   created_at!: number;
+  updated_at!: Date;
 }

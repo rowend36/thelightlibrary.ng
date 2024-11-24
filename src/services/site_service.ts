@@ -14,7 +14,7 @@ export function clean(title: string | undefined) {
 }
 
 export async function updateSite(
-  data: Partial<SiteInfo> & Pick<SiteInfo, "profile">,
+  data: Partial<SiteInfo> & Pick<SiteInfo, "profile">
 ) {
   const db = getDatabase();
   const m = db<SiteInfo>(Type<Table>("site_info"))
@@ -28,11 +28,11 @@ export async function updateSite(
       title2: "",
       description2: "",
       ...data,
+      updated_at: new Date(),
       title: clean(data.title),
     })
     .onConflict("profile")
     .merge({ ...data, title: clean(data.title) });
-  console.log(m.toSQL(), data);
   await m;
 }
 
@@ -51,4 +51,16 @@ export async function getSiteInfo(profile = "default") {
         "Books that touch on almost every topic of life. The real leaders in every field are the top readers in that field.",
     } as SiteInfo);
   return reshape([data])[0];
+}
+
+export function getAllSiteFiles() {
+  const db = getDatabase();
+  return [
+    db<SiteInfo>(Type<Table>("site_info")).select(
+      "background_img",
+      "landing_img",
+      "author_img",
+      "site_info.updated_at"
+    ),
+  ];
 }

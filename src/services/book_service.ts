@@ -19,18 +19,18 @@ import { purchaseRepository } from "./purchase_service";
 import { reviewRepository } from "./review_service";
 
 function selectBooks() {
-  return bookRepository.select().orderBy("book_id", "desc");
+  return bookRepository.select().orderBy("books.book_id", "desc");
 }
 export async function getBooks(limit: number = 100, offset: number = 0) {
   return reshape(
-    await selectBooks().where("enabled", true).limit(limit).offset(offset),
+    await selectBooks().where("enabled", true).limit(limit).offset(offset)
   ).map(prefixBucket) as Book[];
 }
 
 export async function getBookDownloadLink(
   book_id: number,
   user: User | null,
-  lifetimeMs = 24 * 60 * 60 * 1000,
+  lifetimeMs = 24 * 60 * 60 * 1000
 ) {
   const book = await getBookById(book_id, true);
   if (!book) {
@@ -42,19 +42,19 @@ export async function getBookDownloadLink(
       issueTimeMs: Date.now(),
       lifetimeMs,
       url: book.pdf_url,
-    }),
+    })
   );
   return token + "/" + encodeURIComponent(book.title);
 }
 
 export async function getBookById(
   book_id: number,
-  withPdfURL = false,
+  withPdfURL = false
 ): Promise<Book> {
   return reshape(
     await (withPdfURL ? selectBooks().select("pdf_url") : selectBooks())
       .where("books.book_id", book_id)
-      .limit(1),
+      .limit(1)
   ).map(prefixBucket)[0] as Book;
 }
 
@@ -63,7 +63,7 @@ function selectFeatured() {
     .innerJoin(
       Type<Table>("featured"),
       Type<JoinColumn>("featured.book_id"),
-      Type<JoinColumn>("books.book_id"),
+      Type<JoinColumn>("books.book_id")
     )
     .select(
       Type<Selection[]>([
@@ -71,7 +71,7 @@ function selectFeatured() {
         "feature_image1 as images[a]",
         "feature_image2 as images[b]",
         "feature_image3 as images[c]",
-      ]),
+      ])
     );
 }
 
@@ -80,26 +80,26 @@ export async function getFeatured(limit: number = 100, offset: number = 0) {
     await selectFeatured()
       .where("featured.enabled", true)
       .limit(limit)
-      .offset(offset),
+      .offset(offset)
   ).map(prefixBucket);
 }
 
 export async function getFeaturedAdmin(
   limit: number = 100,
-  offset: number = 0,
+  offset: number = 0
 ) {
   return reshape(
     await selectFeatured()
       .select("featured.enabled")
       .limit(limit)
-      .offset(offset),
+      .offset(offset)
   ).map(prefixBucket);
 }
 export async function feature(
   book_id: number,
   synopsis: string,
   images: string[],
-  enabled = false,
+  enabled = false
 ) {
   const db = getDatabase();
   await db<Featured>(Type<Table>("featured"))
@@ -109,6 +109,7 @@ export async function feature(
       feature_image1: images[0],
       feature_image2: images[1],
       feature_image3: images[3],
+      updated_at: new Date(),
       enabled: enabled,
     })
     .onConflict("book_id")
@@ -117,6 +118,7 @@ export async function feature(
       "feature_image1",
       "feature_image2",
       "feature_image3",
+      "updated_at",
       "enabled",
     ]);
 }
@@ -133,10 +135,24 @@ export async function getBooksAdmin(limit: number = 100, offset: number = 0) {
       .select("pdf_url")
       .select("enabled")
       .limit(limit)
-      .offset(offset),
+      .offset(offset)
   ).map(prefixBucket);
 }
-
+export function getAllBookFiles() {
+  return [
+    selectBooks()
+      .clearSelect()
+      .select("pdf_url", "book_cover_url", "books.updated_at"),
+    selectFeatured()
+      .clearSelect()
+      .select(
+        "feature_image1",
+        "feature_image2",
+        "feature_image3",
+        "featured.updated_at"
+      ),
+  ];
+}
 export async function deleteBook(book_id: number) {
   try {
     const db = getDatabase();
@@ -156,7 +172,7 @@ export async function deleteBook(book_id: number) {
 
       if (purchases.success > 0 || purchases.pending > 0) {
         throw new Error(
-          "Cannot delete book that has been checked out. Disable instead?",
+          "Cannot delete book that has been checked out. Disable instead?"
         );
       } else {
         await purchaseRepository
@@ -189,7 +205,7 @@ export async function deleteBook(book_id: number) {
 export async function searchBooks(
   query: string,
   limit: number = 100,
-  offset: number = 0,
+  offset: number = 0
 ) {
   return (
     await search<Book>(query, "books.tsv", selectBooks(), offset, limit)
@@ -233,13 +249,13 @@ export async function updateBook(
     Omit<Book, "book_id" | "is_presale" | "enabled" | "recommended">
   > & {
     authors?: Author[];
-  },
+  }
 ) {
   const db = getDatabase();
   return db.transaction(async (trx) => {
     await trx<Book>(Type<Table>("books"))
       .where("book_id", book_id)
-      .update({ enabled: true, ...book })
+      .update({ enabled: true, ...book, updated_at: new Date() })
       .returning("book_id");
     if (authors) {
       await createRelations({
@@ -278,7 +294,7 @@ export async function setRecommended({ books = [] }: { books: number[] }) {
 
 export async function getRecommended() {
   return reshape(await selectBooks().where("recommended", true)).map(
-    prefixBucket,
+    prefixBucket
   );
 }
 

@@ -8,5 +8,7 @@ export class Featured {
   feature_image2?: string;
   feature_image3?: string;
   images?: string[];
+  created_at?: number;
+  updated_at?: Date;
   book?: Book;
 }

@@ -5,12 +5,11 @@ import { Cart } from "../data/models/cart";
 import { Featured } from "../data/models/featured";
 import { Post } from "../data/models/post";
 import { Purchase } from "../data/models/purchase";
-import { Recommendation } from "../data/models/recommend";
 import { Review } from "../data/models/review";
 import { SiteInfo } from "../data/models/site";
+import { SiteReview } from "../data/models/site_review";
 import { Tag } from "../data/models/tag";
 import { User } from "../data/models/user";
-import { SiteReview } from "../data/models/site_review";
 
 let _database: Knex<any, unknown[]> | null = null;
 export const getDatabase = () =>
@@ -80,7 +79,6 @@ type metadata = {
   };
   site_reviews: SiteReview;
   featured: Featured;
-  recommended: Recommendation;
   users: User;
   reviews: Review;
 };
