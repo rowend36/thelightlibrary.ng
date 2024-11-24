@@ -1,6 +1,5 @@
-import { upload } from "@vercel/blob/client";
 import { ZodIssue } from "zod";
-import { nanoid } from "nanoid";
+import { vercelUpload } from "./file_upload/vercel_upload";
 
 export const baseURL = import.meta.env.DEV
   ? "http://localhost:8088/api"
@@ -18,6 +17,10 @@ export class ValidationError extends APIError {
     | undefined = undefined;
 }
 
+// Storing the files on Vercel but optimizing them with cloudflare
+export function uploadAndGetURL(file: File) {
+  return vercelUpload(baseURL + "/image/upload", file);
+}
 export async function fetcher(
   ...[url, init, ...args]:
     | Parameters<typeof fetch>
@@ -50,21 +53,6 @@ export async function fetcher(
   } else {
     return data;
   }
-}
-
-const map = new WeakMap();
-export async function uploadAndGetURL(image: File) {
-  if (map.has(image)) {
-    return map.get(image);
-  }
-  const x = await upload(nanoid(), image, {
-    multipart: true,
-    access: "public",
-    contentType: image.type,
-    handleUploadUrl: baseURL + "/image/upload",
-  });
-  map.set(image, x.downloadUrl);
-  return x.downloadUrl;
 }
 
 export async function queryFn({ queryKey }: { queryKey: string[] }) {

@@ -34,7 +34,7 @@ export default function BlogSection() {
           ) : posts?.length ? (
             posts?.slice(0, 3).map((post: Post) => (
               <div className="md:w-1/3 flex-grow">
-                <PostView key={post.post_id} post={post} spaced />
+                <PostView key={post.post_id} post={post} spaced clip />
               </div>
             ))
           ) : (
@@ -54,7 +54,15 @@ export default function BlogSection() {
   );
 }
 
-export function PostView({ post, spaced }: { post: Post; spaced?: boolean }) {
+export function PostView({
+  post,
+  spaced,
+  clip,
+}: {
+  post: Post;
+  spaced?: boolean;
+  clip?: boolean;
+}) {
   return (
     <a
       className={
@@ -64,7 +72,10 @@ export function PostView({ post, spaced }: { post: Post; spaced?: boolean }) {
     >
       <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
       <p
-        className="text-justify text-text break-all max-h-24 overflow-hidden line-clamp-3"
+        className={
+          (clip ? "line-clamp-3 max-h-24 overflow-hidden" : "") +
+          " text-justify text-text break-all "
+        }
         dangerouslySetInnerHTML={{ __html: post.content }}
       ></p>
       {spaced ? <div style={{ flexGrow: 1 }} /> : null}

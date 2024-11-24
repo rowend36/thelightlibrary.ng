@@ -1,16 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link2 } from "iconsax-react";
-import { ButtonBase } from "../components/base/ButtonBase";
+import { PostView } from "../components/home/BlogSection";
+import CallToAction from "../components/home/CallToAction";
+import Footer from "../components/home/Footer";
+import Navbar from "../components/home/Navbar";
 import Loader from "../components/Loader";
 import { mapResponseToBlogList } from "../data/actions/mappers";
 import { queryFn } from "../data/actions/queryFn";
 import { Post } from "../data/models/post";
-import formatDate from "../utils/format_date";
-import Link from "../components/base/Link";
-import Navbar from "../components/home/Navbar";
-import CallToAction from "../components/home/CallToAction";
-import Footer from "../components/home/Footer";
-import { PostView } from "../components/home/BlogSection";
 
 export default function BlogPage() {
   const {

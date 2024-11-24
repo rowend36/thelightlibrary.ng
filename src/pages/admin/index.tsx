@@ -1,12 +1,6 @@
-import DashboardLayout from "../../components/admin/DashboardLayout";
-import Header from "../../components/admin/Header";
-import Sidebar from "../../components/admin/Sidebar";
-import {
-  DashboardProps,
-  DashboardProvider,
-} from "../../components/admin/DashboardContext";
 import { useQuery } from "@tanstack/react-query";
 import bookPng from "../../assets/my_images/image.png";
+import { DashboardProvider } from "../../components/admin/DashboardContext";
 import { queryFn } from "../../data/actions/queryFn";
 
 export default function AdminPage(): JSX.Element {
