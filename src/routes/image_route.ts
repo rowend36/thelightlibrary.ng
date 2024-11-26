@@ -45,10 +45,7 @@ imageRoute.post(
     res.send({
       message: "Done",
       url:
-        process.env.WEBSITE_URL +
-        "/" +
-        req.file.destination +
-        req.file.filename,
+        process.env.SERVER_URL + "/" + req.file.destination + req.file.filename,
     });
   })
 );
