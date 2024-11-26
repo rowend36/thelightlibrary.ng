@@ -1,51 +1,34 @@
 import { NextFunction, Router } from "express";
 // import { authMiddleware } from "../middleware/authMiddleware";
 
-import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
-import { list, del } from "@vercel/blob";
-import { getDatabase } from "../config/database";
-import s from "../utils/safe_async_handler";
-import { bookRepository } from "../services/book_repository";
+import { del, list } from "@vercel/blob";
+import cloudinary from "../config/cloudinary";
 import { getAllBookFiles } from "../services/book_service";
 import { getAllReviewFiles } from "../services/review_service";
 import { getAllSiteFiles } from "../services/site_service";
+import s from "../utils/safe_async_handler";
 export const imageRoute = Router();
 
 imageRoute.post(
   "/upload",
   //   authMiddleware,
   async (req, res, next: NextFunction) => {
-    try {
-      const db = getDatabase();
-      const jsonResponse = await handleUpload({
-        body: req.body,
+    const paramsToSign = {
+      timestamp: Math.round(new Date().getTime() / 1000),
+      folder: "signed_uploads", // Specify folder
+    };
 
-        request: req,
-        onBeforeGenerateToken: async (
-          pathname
-          /* clientPayload */
-        ) => {
-          return {
-            tokenPayload: JSON.stringify({}),
-          };
-        },
-        onUploadCompleted: async ({ blob, tokenPayload }) => {
-          console.log("blob upload completed", blob, tokenPayload);
+    const signature = cloudinary.v2.utils.api_sign_request(
+      paramsToSign,
+      cloudinary.v2.config().api_secret!
+    );
 
-          try {
-            // Run any logic after the file upload completed
-            // const { userId } = JSON.parse(tokenPayload);
-            // await db.update({ avatar: blob.url, userId });
-          } catch (error) {
-            throw new Error("Could not update user");
-          }
-        },
-      });
-
-      res.json(jsonResponse);
-    } catch (error) {
-      res.status(400).json({ error: (error as Error).message });
-    }
+    res.json({
+      signature,
+      timestamp: paramsToSign.timestamp,
+      folder: paramsToSign.folder,
+      api_key: cloudinary.v2.config().api_key,
+    });
   }
 );
 
@@ -61,10 +44,10 @@ imageRoute.post(
   s(async (_, res) => {
     const files = await getDatabaseFiles();
     const cutOff = Date.now() - 2 * 60 * 60 * 1000;
-    let cursor = undefined;
+    let cursor: string = undefined!;
     do {
       const { blobs, hasMore, cursor: _cursor } = await list({ cursor });
-      cursor = _cursor;
+      cursor = _cursor as string;
       const gc = [];
       for (const blob of blobs) {
         if (

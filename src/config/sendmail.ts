@@ -6,7 +6,7 @@ export function sendMail(user: User) {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: process.env.SEND_MAIL_TOKEN,
+      Authorization: process.env.SEND_MAIL_TOKEN as string,
     },
     body: JSON.stringify({
       from: { address: "<DOMAIN>" },
