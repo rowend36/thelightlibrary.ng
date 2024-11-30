@@ -1,5 +1,7 @@
 import { ZodIssue } from "zod";
 import { vercelUpload } from "./file_upload/vercel_upload";
+import { cloudinaryUpload } from "./file_upload/cloudinary_upload";
+import { httpUpload } from "./file_upload/http_upload";
 
 export const baseURL = import.meta.env.DEV
   ? "http://localhost:8088/api"
@@ -19,7 +21,7 @@ export class ValidationError extends APIError {
 
 // Storing the files on Vercel but optimizing them with cloudflare
 export function uploadAndGetURL(file: File) {
-  return vercelUpload(baseURL + "/image/upload", file);
+  return httpUpload(baseURL + "/image/upload", file);
 }
 export async function fetcher(
   ...[url, init, ...args]:

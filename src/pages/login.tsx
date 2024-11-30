@@ -29,7 +29,7 @@ export default function LoginPage() {
         params.get("redirect_url") ?? (user.role === "admin" ? "/admin" : "/"),
         {
           replace: true,
-        },
+        }
       );
     }
   }, [navigate, user, params]);
@@ -40,8 +40,8 @@ export default function LoginPage() {
   return (
     <>
       <Navbar />
-      <div className="container max-w-md mx-auto py-16 pt-32">
-        <div className="flex justify-center pointer-events-none">
+      <div className="container max-w-md mx-auto py-16 pt-32 flex-col flex items-center">
+        <div className="pointer-events-none">
           <AppLogo />
         </div>
         <form
@@ -72,7 +72,7 @@ export default function LoginPage() {
             label="Email"
             error={
               error?.errors?.find(
-                (e: ZodIssue) => e.path?.join(".") === "email",
+                (e: ZodIssue) => e.path?.join(".") === "email"
               )?.message
             }
             onChange={(e) => {
@@ -86,7 +86,7 @@ export default function LoginPage() {
             className="mt-8"
             error={
               error?.errors?.find(
-                (e: ZodIssue) => e.path?.join(".") === "password",
+                (e: ZodIssue) => e.path?.join(".") === "password"
               )?.message
             }
             onChange={(e) => {
