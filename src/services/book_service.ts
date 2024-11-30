@@ -163,6 +163,16 @@ export async function deleteBook(book_id: number) {
           .clearSelect()
           .select("purchase.status")
           .where("books.book_id", book_id)
+          .where((trx) => {
+            trx
+              .where("purchase.status", "success")
+              .orWhere("purchase.status", "pending")
+              .andWhere(
+                "purchase.created_at",
+                ">=",
+                new Date(Date.now() - 24 * 7 * 60 * 60 * 1000)
+              );
+          })
           .count()
           .groupBy(["purchase.status"])
       ).reduce((a, e) => {

@@ -11,7 +11,7 @@ import path from "path";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/uploads/");
+    cb(null, "uploads/");
   },
 
   filename: async function (req, file, cb) {
@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
 const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".pdf"];
 const upload = multer({
   fileFilter(req, file, callback) {
+    // TODO - temporary storage and garbage collection
     if (!allowedExtensions.includes(path.extname(file.originalname))) {
       callback(
         new Error("Bad File Extension: " + path.extname(file.originalname))

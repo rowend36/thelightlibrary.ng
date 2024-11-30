@@ -25,7 +25,7 @@ app.use(
     credentials: true,
     origin: function origin(
       origin: string | undefined,
-      callback: (_: null, __: boolean) => void,
+      callback: (_: null, __: boolean) => void
     ) {
       if (true || allowedOrigins.includes(origin!)) {
         callback(null, true);
@@ -34,7 +34,7 @@ app.use(
         callback(null, false);
       }
     },
-  }),
+  })
 );
 
 app.use(express.json());
@@ -57,12 +57,13 @@ app.use("/api/site", siteRoute);
 app.get("/api", (req, res) => {
   res.send("Server is cool.");
 });
+app.use("/uploads", express.static("uploads"));
 app.use(function (
   error: Error,
   req: express.Request,
   res: express.Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next: express.NextFunction,
+  next: express.NextFunction
 ) {
   console.log("Best");
   console.error(error);
