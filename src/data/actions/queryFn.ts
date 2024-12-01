@@ -1,11 +1,9 @@
 import { ZodIssue } from "zod";
-import { vercelUpload } from "./file_upload/vercel_upload";
-import { cloudinaryUpload } from "./file_upload/cloudinary_upload";
 import { httpUpload } from "./file_upload/http_upload";
 
 export const baseURL = import.meta.env.DEV
   ? "http://localhost:8088/api"
-  : "https://thelightlibrary-backend.vercel.app/api";
+  : "https://api.thegleamingcatalog.com.ng/api";
 
 export class APIError extends Error {
   cause: unknown;
