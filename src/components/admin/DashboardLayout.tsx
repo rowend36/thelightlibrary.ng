@@ -32,7 +32,7 @@ export default function DashboardLayout({
       <input type={"checkbox"} id={"menu-toggle"} className="hidden peer" />
       <label
         htmlFor="menu-toggle"
-        className="inset-0 bg-black/50 fixed z-10 invisible peer-checked:visible"
+        className="inset-0 bg-black/50 fixed z-10 invisible peer-0checked:visible"
       />
       <label
         htmlFor="menu-toggle"
