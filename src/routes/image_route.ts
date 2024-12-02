@@ -46,13 +46,15 @@ imageRoute.post(
   s(async (req, res) => {
     const { nanoid } = await import("nanoid");
     const fileName = nanoid();
-    const contentType = (
-      req.validated_data as z.infer<typeof uploadImageSchema>
-    ).contentType;
+    const data = req.validated_data as z.infer<typeof uploadImageSchema>;
     res.send({
       message: "Done",
-      url: await createPresignedUrlWithClient(fileName, contentType),
-      fileURL: contentType.startsWith("image")
+      url: await createPresignedUrlWithClient(
+        fileName,
+        data.contentType,
+        data.contentLength
+      ),
+      fileURL: data.contentType.startsWith("image")
         ? process.env.IMAGE_URL_PREFIX + "/" + fileName
         : process.env.MEDIA_URL + "/" + fileName,
     });

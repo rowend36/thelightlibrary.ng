@@ -18,4 +18,5 @@ export const uploadImageSchema = z.object({
     "text/plain ",
     "text/htm",
   ]),
+  contentLength: z.number().max(10_000_000).min(1),
 });

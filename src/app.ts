@@ -17,6 +17,9 @@ import authorRoute from "./routes/author_route";
 const app = express();
 app.use(
   helmet({
+    crossOriginResourcePolicy: {
+      policy: "same-site",
+    },
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),

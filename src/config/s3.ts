@@ -37,7 +37,7 @@ export const uploadFileToAws = async (fileName: string, filePath: string) => {
     };
 
     // Upload the file to S3
-    await s3Client.send(new PutObjectCommand(uploadParams)).then((data) => {
+    await s3Client.send(new PutObjectCommand(uploadParams)).then(() => {
       // Delete the file from the local filesystem after successful upload
       if (fs.existsSync(filePath)) {
         fs.unlink(filePath, (err) => {
@@ -57,12 +57,14 @@ export const uploadFileToAws = async (fileName: string, filePath: string) => {
 
 export const createPresignedUrlWithClient = async (
   key: string,
-  ContentType?: string
+  ContentType?: string,
+  ContentLength?: number
 ) => {
   const command = new PutObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: key,
     ContentType,
+    ContentLength,
   });
   return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
 };
@@ -118,7 +120,8 @@ export const isFileAvailableInAwsBucket = async (fileName: string) => {
     // If the object exists, return true
     return true;
   } catch (err) {
-    if (err.name === "NotFound") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((err as any).name === "NotFound") {
       // File not found in AWS bucket, return false
       return false;
     } else {
@@ -136,9 +139,7 @@ export const deleteFileFromAws = async (fileName: string) => {
       Key: fileName,
     };
     // Upload the file to S3
-    await s3Client
-      .send(new DeleteObjectCommand(uploadParams))
-      .then((data) => {});
+    await s3Client.send(new DeleteObjectCommand(uploadParams)).then(() => {});
   } catch (err) {
     console.error("Error ", err);
     return "error";
