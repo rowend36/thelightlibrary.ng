@@ -1,13 +1,17 @@
 import { Router } from "express";
 // import { authMiddleware } from "../middleware/authMiddleware";
 
+import multer from "multer";
+import path from "path";
+import z from "zod";
+import { createPresignedUrlWithClient } from "../config/s3";
+import { authMiddleware } from "../middleware/authMiddleware";
+import { validateRequest } from "../middleware/validate_request";
 import { getAllBookFiles } from "../services/book_service";
 import { getAllReviewFiles } from "../services/review_service";
 import { getAllSiteFiles } from "../services/site_service";
 import s from "../utils/safe_async_handler";
-import { authMiddleware } from "../middleware/authMiddleware";
-import multer from "multer";
-import path from "path";
+import { uploadImageSchema } from "./schemas/image_schemas";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -38,15 +42,19 @@ export const imageRoute = Router();
 imageRoute.post(
   "/upload",
   authMiddleware,
-  upload.single("file"),
-  s((req, res) => {
-    if (!req.file) {
-      return res.status(400).send({ error: "No file uploaded!" });
-    }
+  validateRequest(uploadImageSchema),
+  s(async (req, res) => {
+    const { nanoid } = await import("nanoid");
+    const fileName = nanoid();
+    const contentType = (
+      req.validated_data as z.infer<typeof uploadImageSchema>
+    ).contentType;
     res.send({
       message: "Done",
-      url:
-        process.env.SERVER_URL + "/" + req.file.destination + req.file.filename,
+      url: await createPresignedUrlWithClient(fileName, contentType),
+      fileURL: contentType.startsWith("image")
+        ? process.env.IMAGE_URL_PREFIX + "/" + fileName
+        : process.env.MEDIA_URL + "/" + fileName,
     });
   })
 );

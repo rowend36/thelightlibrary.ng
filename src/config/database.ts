@@ -44,6 +44,7 @@ export const destroyDatabase = async () => {
 
 async function cleanup(e: string) {
   console.log("Received " + e + ". Cleaning up...");
+
   await destroyDatabase();
   console.log("Cleanup complete.");
   process.exit(0);
