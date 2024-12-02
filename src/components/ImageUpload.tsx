@@ -62,13 +62,24 @@ export default function ImageUpload({
         <input
           type="file"
           key={key}
+          maxLength={10_000_000}
           required={required}
           id={name}
           onChange={(e) => {
-            setBgImage(e.target.files?.[0] ?? null);
+            const file = e.target.files?.[0];
+            if (!file) return;
+            if (file.size > 10_000_000) {
+              alert(
+                "File size should be less than 10MB to reduce costs and keep website fast"
+              );
+              setKey((k) => k + 1);
+              setBgImage(null);
+              return;
+            }
+            setBgImage(file);
           }}
           name={name}
-          accept="application/image"
+          accept="image/*"
           className="opacity-[0.025] bg-primary absolute inset-0 cursor-pointer"
         />
         {!allowClear || !bgImage ? null : (

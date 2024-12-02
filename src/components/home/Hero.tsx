@@ -41,7 +41,7 @@ const Hero = () => {
           <div className="md:w-1/2 xl:w-2/3 min-h-full flex items-center justify-center px-4 max-sm:pt-16 md:p-8">
             <img
               src={siteInfo?.landing_img}
-              className="object-cover aspect-[0.75] min-h-72 lg:min-h-80 xl:min-h-96 object-bottom bg-black rounded-2xl"
+              className="object-cover aspect-[0.75] min-h-72 lg:min-h-60 xl:min-h-72 max-h-[70vh] object-bottom bg-black rounded-2xl"
               alt=""
             />
           </div>

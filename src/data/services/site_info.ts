@@ -7,11 +7,9 @@ export function useSiteInfo() {
   const defaultSiteInfo: SiteInfo = useMemo(
     () => ({
       profile: "",
-      title:
-        'The <span className="text-primaryLight">Book</span> That Will <span className="text-white">Change</span> <span className="text-tertiary">Everything</span>',
+      title: "..",
       title2: "",
-      description:
-        'What separates the top <span className="font-bold tracking-widest text-xl mx-1">1%</span> of the society from everyone else? The book you have been looking for is finally within your reach. ',
+      description: "",
       description2: "",
       about_author: "",
       about_website: "",

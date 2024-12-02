@@ -1,8 +1,8 @@
 # ARCHITECTURE
 
 1. Database - Aiven Postgres
-2. Storage - Vercel Blob
-3. Hosting - Vercel
+2. Storage - Truhost Local disk
+3. Hosting - Vercel/TrueHost
 4. ORM - none
 5. Frontend - React
 6. Framework - none
