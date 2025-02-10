@@ -64,7 +64,16 @@ authRoute.post(
     };
     await session.save();
     res.json({ data: session.user });
-  }),
+  })
+);
+
+authRoute.post(
+  "/logout",
+  s(async (req, res) => {
+    const session = await getSession(req, res);
+    session.destroy();
+    res.json({ message: "User has been logged out successfuly." });
+  })
 );
 
 authRoute.post(
@@ -89,7 +98,7 @@ authRoute.post(
     }
     const password_hash = await bcrypt.hash(
       data.password,
-      10 /** number of rounds of hashing */,
+      10 /** number of rounds of hashing */
     );
     const user_id = await createUser({
       email: data.email,
@@ -107,7 +116,7 @@ authRoute.post(
     };
     await session.save();
     res.json({ data: session.user });
-  }),
+  })
 );
 
 export default authRoute;

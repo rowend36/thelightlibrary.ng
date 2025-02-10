@@ -18,6 +18,8 @@ import {
   paySchema,
 } from "./schemas/cart_schemas";
 import s from "../utils/safe_async_handler";
+import { sendMail } from "../config/sendmail";
+import { createUser, getUserByEmail } from "../services/user_service";
 
 const cartRoute = Router();
 
@@ -76,7 +78,17 @@ cartRoute.get(
           response.data.amount >= parseFloat(purchase.purchase_price) &&
           response.data.currency === "NGN"
         ) {
+          const session = await getSession(req, res);
+          if (!session.user) {
+            // session.user = {
+            //   user_id: GuestUser.user_id,
+            //   email: data.email,
+            //   role: "member",
+            // };
+            await session.save();
+          }
           url.searchParams.set("status", "success");
+
           await updateStatus(purchase.reference, PurchaseStatus.success);
         } else {
           url.searchParams.set("status", "failed");
@@ -94,10 +106,16 @@ cartRoute.post(
   s(async (req, res, next) => {
     try {
       const user = (await getSession(req, res)).user ?? GuestUser;
+
       const data = req.validated_data as z.infer<typeof checkoutSchema>;
       if (!user.user_id && !data.anonymous) {
         return res.status(400).send({
           message: "Cannot checkout anonymously when anonymous is false",
+        });
+      } else if (data.anonymous) {
+        return res.status(400).send({
+          message:
+            "Anonymous checkout is currently under maintenance. Please log in.",
         });
       }
       const cart_id = await setCart(user, data.cart);
@@ -174,7 +192,7 @@ cartRoute.post(
             name: !user || email !== user.email ? undefined : user.username,
           },
           customizations: {
-            title: "The Light Library",
+            title: "The Gleaming Catalog",
             logo: process.env.WEBSITE_URL + "/android-chrome-192x192.png",
             description:
               "Payment for " +
